@@ -1,0 +1,285 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum Role {
+  CUSTOMER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum CouponType {
+  PERCENT
+  FIXED
+}
+
+enum PaymentMethod {
+  RAZORPAY
+  COD
+}
+
+model User {
+  id                  String               @id @default(cuid())
+  name                String
+  email               String               @unique
+  passwordHash        String
+  role                Role                 @default(CUSTOMER)
+  phone               String?
+  createdAt           DateTime             @default(now())
+  orders              Order[]
+  reviews             Review[]
+  addresses           Address[]
+  passwordResetTokens PasswordResetToken[]
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  label     String?
+  name      String
+  phone     String
+  address   String   @db.Text
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model PasswordResetToken {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model Category {
+  id              String    @id @default(cuid())
+  name            String
+  slug            String    @unique
+  description     String?   @db.Text
+  image           String?
+  metaTitle       String?
+  metaDescription String?   @db.Text
+  products        Product[]
+}
+
+model Product {
+  id               String           @id @default(cuid())
+  name             String
+  slug             String           @unique
+  shortDescription String?          @db.Text
+  description      String           @db.Text
+  price            Int
+  mrp              Int
+  stock            Int              @default(0)
+  images           ProductImage[]
+  categoryId       String
+  category         Category         @relation(fields: [categoryId], references: [id])
+  isBestSeller     Boolean          @default(false)
+  isJainFriendly   Boolean          @default(false)
+  tasteProfile     String?
+  oilType          String?
+  weightGrams      Int?
+  ingredients      String?          @db.Text
+  shelfLife        String?
+  metaTitle        String?
+  metaDescription  String?          @db.Text
+  createdAt        DateTime         @default(now())
+  orderItems       OrderItem[]
+  reviews          Review[]
+  variants         ProductVariant[]
+}
+
+model ProductVariant {
+  id        String  @id @default(cuid())
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  label     String
+  price     Int
+  mrp       Int
+  stock     Int     @default(0)
+  isDefault Boolean @default(false)
+  order     Int     @default(0)
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  url       String
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String?  @db.Text
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([productId, userId])
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  productId String
+  createdAt DateTime @default(now())
+
+  @@unique([userId, productId])
+}
+
+model Coupon {
+  id             String     @id @default(cuid())
+  code           String     @unique
+  type           CouponType
+  value          Int
+  minOrderAmount Int?
+  maxUses        Int?
+  usedCount      Int        @default(0)
+  expiresAt      DateTime?
+  active         Boolean    @default(true)
+  createdAt      DateTime   @default(now())
+}
+
+model Order {
+  id                String        @id @default(cuid())
+  userId            String?
+  user              User?         @relation(fields: [userId], references: [id])
+  guestEmail        String?
+  guestAccessToken  String?       @unique
+  items             OrderItem[]
+  status            OrderStatus   @default(PENDING)
+  paymentMethod     PaymentMethod @default(RAZORPAY)
+  subtotal          Int           @default(0)
+  shippingFee       Int           @default(0)
+  taxAmount         Int           @default(0)
+  totalAmount       Int
+  couponCode        String?
+  discountAmount    Int           @default(0)
+  shippingName      String
+  shippingPhone     String
+  shippingAddress   String        @db.Text
+  razorpayOrderId   String?
+  razorpayPaymentId String?
+  createdAt         DateTime      @default(now())
+}
+
+model OrderItem {
+  id           String  @id @default(cuid())
+  orderId      String
+  order        Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId    String
+  product      Product @relation(fields: [productId], references: [id])
+  variantId    String?
+  variantLabel String?
+  quantity     Int
+  price        Int
+}
+
+model SiteSettings {
+  id                     String   @id @default("singleton")
+  siteName               String   @default("FarmStore")
+  logoUrl                String?
+  tagline                String?  @db.Text
+  footerText             String?  @db.Text
+  contactEmail           String?
+  contactPhone           String?
+  contactAddress         String?  @db.Text
+  canonicalDomain        String?
+  metaTitle              String?
+  metaDescription        String?  @db.Text
+  ogImage                String?
+  googleSiteVerification String?
+  robotsIndexingEnabled  Boolean  @default(true)
+  storyTitle             String?
+  storyExcerpt           String?  @db.Text
+  storyBody              String?  @db.Text
+  storyImage             String?
+  storyCtaLabel          String?
+  storyCtaHref           String?
+  whyUsTitle             String?
+  whyUsBody              String?  @db.Text
+  instagramUrl           String?
+  facebookUrl            String?
+  twitterUrl             String?
+  youtubeUrl             String?
+  codEnabled             Boolean  @default(true)
+  shippingFlatFee        Int      @default(0)
+  freeShippingThreshold  Int?
+  gstRatePercent         Int      @default(0)
+  updatedAt              DateTime @updatedAt
+}
+
+model LegalPage {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  body      String   @db.Text
+  updatedAt DateTime @updatedAt
+}
+
+model AnnouncementMessage {
+  id     String  @id @default(cuid())
+  text   String
+  order  Int     @default(0)
+  active Boolean @default(true)
+}
+
+model HeroSlide {
+  id       String  @id @default(cuid())
+  title    String
+  subtitle String  @db.Text
+  ctaLabel String
+  ctaHref  String
+  image    String
+  badge    String?
+  order    Int     @default(0)
+  active   Boolean @default(true)
+}
+
+model TrustBadge {
+  id          String  @id @default(cuid())
+  label       String
+  description String? @db.Text
+  icon        String  @default("leaf")
+  order       Int     @default(0)
+  active      Boolean @default(true)
+}
+
+model Testimonial {
+  id          String  @id @default(cuid())
+  authorName  String
+  quote       String  @db.Text
+  rating      Int     @default(5)
+  productName String?
+  order       Int     @default(0)
+  active      Boolean @default(true)
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
