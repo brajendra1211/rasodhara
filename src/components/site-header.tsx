@@ -25,7 +25,7 @@ export async function SiteHeader() {
   const oilTypes = oilRows.map((r) => r.oilType).filter((t): t is string => !!t);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-black">
+    <header className="sticky top-0 z-40 border-b border-zinc-200 bg-cream dark:border-zinc-800 dark:bg-black">
       <AnnouncementBar />
 
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
