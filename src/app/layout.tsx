@@ -5,6 +5,7 @@ import { AuthProvider } from "@/components/providers/auth-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CartDrawer } from "@/components/cart-drawer";
+import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { getSiteSettings } from "@/lib/settings";
 import { getBaseUrl } from "@/lib/site-url";
 
@@ -87,7 +88,7 @@ export default async function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-cream text-zinc-900 dark:bg-black dark:text-zinc-50">
+      <body className="pb-mobile-nav flex min-h-full flex-col bg-cream text-zinc-900 dark:bg-black dark:text-zinc-50">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
@@ -97,6 +98,7 @@ export default async function RootLayout({
           <main className="flex flex-1 flex-col">{children}</main>
           <SiteFooter />
           <CartDrawer />
+          <MobileBottomNav />
         </AuthProvider>
       </body>
     </html>

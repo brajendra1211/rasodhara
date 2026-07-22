@@ -128,8 +128,23 @@ body {
 
 @media print {
   header,
-  footer {
+  footer,
+  .mobile-bottom-nav {
     display: none !important;
+  }
+}
+
+.pb-mobile-nav {
+  padding-bottom: calc(4.5rem + env(safe-area-inset-bottom, 0px));
+}
+
+.mobile-bottom-nav {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+@media (min-width: 768px) {
+  .pb-mobile-nav {
+    padding-bottom: 0;
   }
 }
 

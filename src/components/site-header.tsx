@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { getSiteSettings } from "@/lib/settings";
 import { AnnouncementBar } from "@/components/announcement-bar";
 import { HeaderActions } from "@/components/header-actions";
+import { MobileMenuButton } from "@/components/mobile-menu-button";
+import { MobileMenu } from "@/components/mobile-menu";
 
 export async function SiteHeader() {
   const [categories, tasteRows, oilRows, settings] = await Promise.all([
@@ -28,7 +30,9 @@ export async function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-zinc-200 bg-cream dark:border-zinc-800 dark:bg-black">
       <AnnouncementBar />
 
-      <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 sm:px-6">
+      <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-3 sm:gap-4 sm:px-6">
+        <MobileMenuButton />
+
         <Link href="/" className="flex shrink-0 items-center gap-2 text-lg font-semibold tracking-tight text-amber-700 dark:text-amber-400">
           {settings.logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
@@ -133,6 +137,8 @@ export async function SiteHeader() {
           />
         </NextForm>
       </div>
+
+      <MobileMenu categories={categories} oilTypes={oilTypes} tastes={tastes} />
     </header>
   );
 }
