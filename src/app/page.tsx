@@ -10,6 +10,8 @@ import { TestimonialsSection } from "@/components/testimonials-section";
 import { NewsletterSignup } from "@/components/newsletter-signup";
 import { getProductRatings } from "@/lib/reviews";
 
+export const dynamic = "force-dynamic";
+
 const FALLBACK_SLIDES: HeroSlide[] = [
   {
     title: "Cold-pressed oils, straight from the farm",
