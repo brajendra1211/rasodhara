@@ -107,7 +107,10 @@ export function HeroSlideForm({
             }}
             className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-amber-700 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-amber-800"
           />
-          <p className="text-xs text-zinc-500">Uploaded images are automatically converted to WebP.</p>
+          <p className="text-xs text-zinc-500">
+            Uploaded images are automatically converted to WebP. For best results on desktop, use a wide landscape
+            image (around 2100x900px, ~21:9 ratio) — narrower or taller photos will get cropped.
+          </p>
         </div>
 
         <div className="flex flex-col gap-1">

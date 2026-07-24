@@ -33,7 +33,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="relative h-[360px] w-full sm:h-[440px]">
+      <div className="relative aspect-[4/3] w-full sm:aspect-[21/9] sm:max-h-[520px]">
         {slides.map((slide, i) => (
           <div
             key={slide.title}
