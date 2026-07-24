@@ -142,7 +142,18 @@ export async function SiteFooter() {
       </div>
 
       <div className="border-t border-zinc-200 py-4 text-center text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
-        {settings.footerText || `© ${new Date().getFullYear()} ${settings.siteName}. All rights reserved.`}
+        <p>{settings.footerText || `© ${new Date().getFullYear()} ${settings.siteName}. All rights reserved.`}</p>
+        <p className="mt-1">
+          Developed by{" "}
+          <a
+            href="https://urgentitsolution.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-zinc-600 hover:text-amber-700 dark:text-zinc-300 dark:hover:text-amber-400"
+          >
+            urgentitsolution.com
+          </a>
+        </p>
       </div>
     </footer>
   );
