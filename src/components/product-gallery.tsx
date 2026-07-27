@@ -71,7 +71,7 @@ export function ProductGallery({
             fill
             sizes="(min-width: 768px) 50vw, 100vw"
             priority
-            className="object-cover"
+            className="object-contain"
           />
         )}
       </div>
