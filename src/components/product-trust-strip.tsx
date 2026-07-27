@@ -7,9 +7,16 @@ const FALLBACK_BADGES = [
   { id: "shipping", label: "Pan-India Shipping", icon: "truck" },
 ];
 
-export async function ProductTrustStrip() {
-  const rows = await prisma.trustBadge.findMany({ where: { active: true }, orderBy: { order: "asc" }, take: 3 });
-  const badges = rows.length > 0 ? rows : FALLBACK_BADGES;
+export async function ProductTrustStrip({
+  productBadges,
+}: {
+  productBadges?: { id: string; label: string; icon: string }[];
+}) {
+  let badges = productBadges;
+  if (!badges || badges.length === 0) {
+    const rows = await prisma.trustBadge.findMany({ where: { active: true }, orderBy: { order: "asc" }, take: 3 });
+    badges = rows.length > 0 ? rows : FALLBACK_BADGES;
+  }
 
   return (
     <div className="flex flex-wrap gap-x-5 gap-y-2 rounded-md border border-zinc-200 bg-zinc-50 px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900/50">

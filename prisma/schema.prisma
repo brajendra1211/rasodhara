@@ -108,6 +108,7 @@ model Product {
   orderItems       OrderItem[]
   reviews          Review[]
   variants         ProductVariant[]
+  badges           ProductBadge[]
 }
 
 model ProductVariant {
@@ -261,12 +262,23 @@ model HeroSlide {
 }
 
 model TrustBadge {
-  id          String  @id @default(cuid())
+  id          String         @id @default(cuid())
   label       String
-  description String? @db.Text
-  icon        String  @default("leaf")
-  order       Int     @default(0)
-  active      Boolean @default(true)
+  description String?        @db.Text
+  icon        String         @default("leaf")
+  order       Int            @default(0)
+  active      Boolean        @default(true)
+  products    ProductBadge[]
+}
+
+model ProductBadge {
+  id           String     @id @default(cuid())
+  productId    String
+  product      Product    @relation(fields: [productId], references: [id], onDelete: Cascade)
+  trustBadgeId String
+  trustBadge   TrustBadge @relation(fields: [trustBadgeId], references: [id], onDelete: Cascade)
+
+  @@unique([productId, trustBadgeId])
 }
 
 model Testimonial {

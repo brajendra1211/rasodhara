@@ -4,6 +4,7 @@ import { useState } from "react";
 import { RichTextEditor } from "@/components/admin/rich-text-editor";
 
 type Category = { id: string; name: string };
+type Badge = { id: string; label: string };
 
 export type VariantDefaults = { label: string; price: number; mrp: number; stock: number };
 
@@ -27,6 +28,7 @@ export type ProductFormDefaults = {
   metaDescription: string;
   images: string[];
   videoUrl: string;
+  badgeIds: string[];
   variants: VariantDefaults[];
 };
 
@@ -50,17 +52,20 @@ const emptyDefaults: ProductFormDefaults = {
   metaDescription: "",
   images: [],
   videoUrl: "",
+  badgeIds: [],
   variants: [],
 };
 
 export function ProductForm({
   action,
   categories,
+  badges,
   defaults = emptyDefaults,
   submitLabel = "Save product",
 }: {
   action: (formData: FormData) => void;
   categories: Category[];
+  badges: Badge[];
   defaults?: ProductFormDefaults;
   submitLabel?: string;
 }) {
@@ -68,6 +73,11 @@ export function ProductForm({
   const [variants, setVariants] = useState<VariantDefaults[]>(defaults.variants);
   const [videoPreview, setVideoPreview] = useState<string | null>(defaults.videoUrl || null);
   const [removeVideo, setRemoveVideo] = useState(false);
+  const [selectedBadgeIds, setSelectedBadgeIds] = useState<string[]>(defaults.badgeIds);
+
+  function toggleBadge(id: string) {
+    setSelectedBadgeIds((prev) => (prev.includes(id) ? prev.filter((b) => b !== id) : [...prev, id]));
+  }
 
   function updateVariant(index: number, field: keyof VariantDefaults, value: string) {
     setVariants((prev) =>
@@ -434,6 +444,35 @@ export function ProductForm({
           </div>
         )}
       </div>
+
+      {badges.length > 0 && (
+        <div className="flex flex-col gap-3 rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
+          <div>
+            <h3 className="text-sm font-medium">Highlights shown on this product (optional)</h3>
+            <p className="text-xs text-zinc-500">
+              Choose which trust badges from{" "}
+              <a href="/admin/settings/badges" className="text-amber-700 hover:underline dark:text-amber-400">
+                Settings &rarr; Badges
+              </a>{" "}
+              appear on this product&apos;s page.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            {badges.map((badge) => (
+              <label key={badge.id} className="flex items-center gap-2 text-sm">
+                <input
+                  type="checkbox"
+                  name="badgeIds"
+                  value={badge.id}
+                  checked={selectedBadgeIds.includes(badge.id)}
+                  onChange={() => toggleBadge(badge.id)}
+                />
+                {badge.label}
+              </label>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div className="flex flex-col gap-3 rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-zinc-500">SEO (optional)</h3>

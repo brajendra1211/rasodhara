@@ -10,9 +10,13 @@ export default async function EditProductPage({
 }) {
   const { id } = await params;
 
-  const [product, categories] = await Promise.all([
-    prisma.product.findUnique({ where: { id }, include: { images: true, variants: { orderBy: { order: "asc" } } } }),
+  const [product, categories, badges] = await Promise.all([
+    prisma.product.findUnique({
+      where: { id },
+      include: { images: true, variants: { orderBy: { order: "asc" } }, badges: true },
+    }),
     prisma.category.findMany({ orderBy: { name: "asc" } }),
+    prisma.trustBadge.findMany({ where: { active: true }, orderBy: { order: "asc" } }),
   ]);
 
   if (!product) notFound();
@@ -25,6 +29,7 @@ export default async function EditProductPage({
       <ProductForm
         action={updateWithId}
         categories={categories}
+        badges={badges}
         submitLabel="Save changes"
         defaults={{
           name: product.name,
@@ -46,6 +51,7 @@ export default async function EditProductPage({
           metaDescription: product.metaDescription ?? "",
           images: product.images.map((i) => i.url),
           videoUrl: product.videoUrl ?? "",
+          badgeIds: product.badges.map((b) => b.trustBadgeId),
           variants: product.variants.map((v) => ({ label: v.label, price: v.price, mrp: v.mrp, stock: v.stock })),
         }}
       />

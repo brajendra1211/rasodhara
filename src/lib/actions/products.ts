@@ -88,6 +88,7 @@ async function productFromForm(formData: FormData) {
     metaDescription: String(formData.get("metaDescription") ?? "").trim() || null,
     images,
     videoUrl,
+    badgeIds: formData.getAll("badgeIds").map(String),
     variants: parseVariants(formData),
   };
 }
@@ -118,6 +119,7 @@ export async function createProduct(formData: FormData) {
       metaDescription: data.metaDescription,
       images: { create: data.images.map((url) => ({ url })) },
       variants: { create: data.variants },
+      badges: { create: data.badgeIds.map((trustBadgeId) => ({ trustBadgeId })) },
     },
   });
 
@@ -159,6 +161,10 @@ export async function updateProduct(productId: string, formData: FormData) {
       variants: {
         deleteMany: {},
         create: data.variants,
+      },
+      badges: {
+        deleteMany: {},
+        create: data.badgeIds.map((trustBadgeId) => ({ trustBadgeId })),
       },
     },
   });

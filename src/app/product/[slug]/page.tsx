@@ -24,6 +24,7 @@ async function getProduct(slug: string) {
       category: true,
       variants: { orderBy: { order: "asc" } },
       reviews: { include: { user: true }, orderBy: { createdAt: "desc" }, take: 10 },
+      badges: { include: { trustBadge: true }, orderBy: { trustBadge: { order: "asc" } } },
     },
   });
 }
@@ -249,7 +250,7 @@ export default async function ProductPage({
               />
             </div>
 
-            <ProductTrustStrip />
+            <ProductTrustStrip productBadges={product.badges.map((b) => b.trustBadge)} />
 
             <ProductInfoTabs
               tabs={
