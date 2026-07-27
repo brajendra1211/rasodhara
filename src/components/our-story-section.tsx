@@ -10,12 +10,24 @@ export async function OurStorySection() {
   return (
     <section className="border-b border-amber-100 bg-amber-50/60 dark:border-zinc-800 dark:bg-amber-950/10">
       <div className="mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 px-4 py-14 sm:px-6 md:grid-cols-2">
-        {settings.storyImage && (
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
-            <Image src={settings.storyImage} alt={settings.storyTitle} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+        {settings.storyVideo ? (
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-black">
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <video
+              src={settings.storyVideo}
+              poster={settings.storyImage ?? undefined}
+              controls
+              className="h-full w-full object-contain"
+            />
           </div>
+        ) : (
+          settings.storyImage && (
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
+              <Image src={settings.storyImage} alt={settings.storyTitle} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+            </div>
+          )
         )}
-        <div className={settings.storyImage ? "" : "md:col-span-2"}>
+        <div className={settings.storyImage || settings.storyVideo ? "" : "md:col-span-2"}>
           <span className="text-xs font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">
             Our Story
           </span>

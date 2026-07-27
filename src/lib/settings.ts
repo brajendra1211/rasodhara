@@ -19,6 +19,7 @@ const DEFAULT_SETTINGS = {
   storyExcerpt: null as string | null,
   storyBody: null as string | null,
   storyImage: null as string | null,
+  storyVideo: null as string | null,
   storyCtaLabel: null as string | null,
   storyCtaHref: null as string | null,
   whyUsTitle: null as string | null,

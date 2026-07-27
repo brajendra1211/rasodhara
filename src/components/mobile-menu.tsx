@@ -109,6 +109,9 @@ export function MobileMenu({ categories, oilTypes, tastes }: MobileMenuProps) {
           <Link href="/our-story" onClick={close} className="rounded-md px-3 py-2.5 hover:bg-amber-50 dark:hover:bg-amber-950">
             Our Story
           </Link>
+          <Link href="/blog" onClick={close} className="rounded-md px-3 py-2.5 hover:bg-amber-50 dark:hover:bg-amber-950">
+            Blog
+          </Link>
 
           <div className="my-2 border-t border-zinc-200 dark:border-zinc-800" />
 

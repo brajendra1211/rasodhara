@@ -31,16 +31,10 @@ export default async function Home() {
   const session = await auth();
   const userId = session?.user?.id;
 
-  const [categories, bestSellers, newArrivals, heroSlideRows, wishlistRows] = await Promise.all([
+  const [categories, bestSellers, heroSlideRows, wishlistRows] = await Promise.all([
     prisma.category.findMany({ orderBy: { name: "asc" } }),
     prisma.product.findMany({
       where: { isBestSeller: true },
-      include: { images: { take: 1 }, variants: true },
-      orderBy: { createdAt: "desc" },
-      take: 8,
-    }),
-    prisma.product.findMany({
-      where: { isBestSeller: false },
       include: { images: { take: 1 }, variants: true },
       orderBy: { createdAt: "desc" },
       take: 8,
@@ -55,7 +49,7 @@ export default async function Home() {
     path: "/",
   };
 
-  const ratings = await getProductRatings([...bestSellers, ...newArrivals].map((p) => p.id));
+  const ratings = await getProductRatings(bestSellers.map((p) => p.id));
 
   const heroSlides: HeroSlide[] =
     heroSlideRows.length > 0
@@ -141,19 +135,6 @@ export default async function Home() {
           </Link>
         </div>
       </section>
-
-      {newArrivals.length > 0 && (
-        <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
-          <SectionHeading title="New Arrivals" />
-          <HorizontalScroller>
-            {newArrivals.map((product) => (
-              <div key={product.id} className="w-40 shrink-0 snap-start sm:w-56">
-                <ProductCard product={product} wishlist={wishlist} rating={ratings.get(product.id)} />
-              </div>
-            ))}
-          </HorizontalScroller>
-        </section>
-      )}
 
       <OurStorySection />
 

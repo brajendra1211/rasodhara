@@ -36,6 +36,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <Link href="/admin/customers" className="rounded-md px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900">
           Customers
         </Link>
+        <Link href="/admin/blog" className="rounded-md px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900">
+          Blog
+        </Link>
         <div className="my-2 border-t border-zinc-200 dark:border-zinc-800" />
         <h2 className="mb-1 mt-1 text-sm font-semibold uppercase tracking-wide text-zinc-500">Site Settings</h2>
         <Link href="/admin/settings" className="rounded-md px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900">
@@ -61,6 +64,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         </Link>
         <Link href="/admin/settings/testimonials" className="rounded-md px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900">
           Testimonials
+        </Link>
+        <Link href="/admin/settings/recipes" className="rounded-md px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900">
+          Recipes
         </Link>
         <div className="my-2 border-t border-zinc-200 dark:border-zinc-800" />
         <Link href="/admin/newsletter" className="rounded-md px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900">

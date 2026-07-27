@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import sanitizeHtml from "sanitize-html";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { saveImageAsWebp } from "@/lib/upload-image";
+import { saveImageAsWebp, saveVideoFile } from "@/lib/upload-image";
 
 const RICH_TEXT_SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   allowedTags: ["p", "br", "strong", "em", "s", "h3", "h4", "ul", "ol", "li", "blockquote", "code", "pre"],
@@ -93,11 +93,21 @@ export async function updateStorySection(formData: FormData) {
       ? await saveImageAsWebp(storyImageFile, "story")
       : String(formData.get("storyImage") ?? "").trim() || existing?.storyImage || null;
 
+  const storyVideoFile = formData.get("storyVideoFile");
+  const removeStoryVideo = formData.get("removeStoryVideo") === "on";
+  const storyVideo =
+    storyVideoFile instanceof File && storyVideoFile.size > 0
+      ? await saveVideoFile(storyVideoFile, "story")
+      : removeStoryVideo
+        ? null
+        : existing?.storyVideo || null;
+
   const data = {
     storyTitle: String(formData.get("storyTitle") ?? "").trim() || null,
     storyExcerpt: String(formData.get("storyExcerpt") ?? "").trim() || null,
     storyBody: sanitizeHtml(String(formData.get("storyBody") ?? ""), RICH_TEXT_SANITIZE_OPTIONS) || null,
     storyImage,
+    storyVideo,
     storyCtaLabel: String(formData.get("storyCtaLabel") ?? "").trim() || null,
     storyCtaHref: String(formData.get("storyCtaHref") ?? "").trim() || null,
   };
@@ -374,4 +384,98 @@ export async function deleteNewsletterSubscriber(id: string) {
   await requireAdmin();
   await prisma.newsletterSubscriber.delete({ where: { id } });
   revalidatePath("/admin/newsletter");
+}
+
+// Recipes
+
+async function recipeFromForm(formData: FormData) {
+  const imageFile = formData.get("imageFile");
+  const image =
+    imageFile instanceof File && imageFile.size > 0
+      ? await saveImageAsWebp(imageFile, "recipes")
+      : String(formData.get("image") ?? "").trim() || null;
+
+  return {
+    title: String(formData.get("title") ?? "").trim(),
+    image,
+    linkHref: String(formData.get("linkHref") ?? "").trim() || null,
+    order: Number(formData.get("order") ?? 0),
+    active: formData.get("active") === "on",
+  };
+}
+
+export async function createRecipe(formData: FormData) {
+  await requireAdmin();
+  await prisma.recipe.create({ data: await recipeFromForm(formData) });
+  revalidateSiteWide();
+  redirect("/admin/settings/recipes");
+}
+
+export async function updateRecipe(recipeId: string, formData: FormData) {
+  await requireAdmin();
+  await prisma.recipe.update({ where: { id: recipeId }, data: await recipeFromForm(formData) });
+  revalidateSiteWide();
+  redirect("/admin/settings/recipes");
+}
+
+export async function deleteRecipe(id: string) {
+  await requireAdmin();
+  await prisma.recipe.delete({ where: { id } });
+  revalidateSiteWide();
+}
+
+// Blog
+
+function slugifyText(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+async function blogPostFromForm(formData: FormData) {
+  const title = String(formData.get("title") ?? "").trim();
+  const coverImageFile = formData.get("coverImageFile");
+  const coverImage =
+    coverImageFile instanceof File && coverImageFile.size > 0
+      ? await saveImageAsWebp(coverImageFile, "blog")
+      : String(formData.get("coverImage") ?? "").trim() || null;
+
+  return {
+    title,
+    slug: slugifyText(String(formData.get("slug") ?? "") || title),
+    excerpt: String(formData.get("excerpt") ?? "").trim() || null,
+    body: sanitizeHtml(String(formData.get("body") ?? ""), RICH_TEXT_SANITIZE_OPTIONS),
+    coverImage,
+    published: formData.get("published") === "on",
+    metaTitle: String(formData.get("metaTitle") ?? "").trim() || null,
+    metaDescription: String(formData.get("metaDescription") ?? "").trim() || null,
+  };
+}
+
+export async function createBlogPost(formData: FormData) {
+  await requireAdmin();
+  const data = await blogPostFromForm(formData);
+  await prisma.blogPost.create({ data });
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
+  redirect("/admin/blog");
+}
+
+export async function updateBlogPost(postId: string, formData: FormData) {
+  await requireAdmin();
+  const data = await blogPostFromForm(formData);
+  await prisma.blogPost.update({ where: { id: postId }, data });
+  revalidatePath("/admin/blog");
+  revalidatePath(`/blog/${data.slug}`);
+  revalidatePath("/blog");
+  redirect("/admin/blog");
+}
+
+export async function deleteBlogPost(id: string) {
+  await requireAdmin();
+  await prisma.blogPost.delete({ where: { id } });
+  revalidatePath("/admin/blog");
+  revalidatePath("/blog");
 }

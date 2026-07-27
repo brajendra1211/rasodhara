@@ -219,6 +219,7 @@ model SiteSettings {
   storyExcerpt           String?  @db.Text
   storyBody              String?  @db.Text
   storyImage             String?
+  storyVideo             String?
   storyCtaLabel          String?
   storyCtaHref           String?
   whyUsTitle             String?
@@ -295,4 +296,28 @@ model NewsletterSubscriber {
   id        String   @id @default(cuid())
   email     String   @unique
   createdAt DateTime @default(now())
+}
+
+model Recipe {
+  id        String   @id @default(cuid())
+  title     String
+  image     String?
+  linkHref  String?
+  order     Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model BlogPost {
+  id              String   @id @default(cuid())
+  title           String
+  slug            String   @unique
+  excerpt         String?  @db.Text
+  body            String   @db.Text
+  coverImage      String?
+  published       Boolean  @default(true)
+  metaTitle       String?
+  metaDescription String?  @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }

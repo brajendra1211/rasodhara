@@ -79,6 +79,34 @@ export default async function AdminStorySettingsPage() {
           )}
         </div>
 
+        <div className="flex flex-col gap-3 rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
+          <div className="flex flex-col gap-1">
+            <label htmlFor="storyVideoFile" className="text-sm font-medium">
+              Upload video (optional)
+            </label>
+            <input
+              id="storyVideoFile"
+              name="storyVideoFile"
+              type="file"
+              accept="video/mp4,video/webm,video/quicktime"
+              className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-amber-700 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-amber-800"
+            />
+            <p className="text-xs text-zinc-500">
+              MP4, WebM, or MOV — up to 10MB. When a video is set, it&apos;s shown instead of the image above.
+            </p>
+          </div>
+          {settings.storyVideo && (
+            <div className="flex flex-col gap-2">
+              {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+              <video src={settings.storyVideo} controls className="h-40 w-full max-w-xs rounded-md bg-black object-contain" />
+              <label className="flex w-fit items-center gap-2 text-sm text-red-600">
+                <input type="checkbox" name="removeStoryVideo" />
+                Remove video
+              </label>
+            </div>
+          )}
+        </div>
+
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="flex flex-col gap-1">
             <label htmlFor="storyCtaLabel" className="text-sm font-medium">

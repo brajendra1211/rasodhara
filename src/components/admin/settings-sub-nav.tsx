@@ -9,6 +9,7 @@ const TABS = [
   { label: "Hero Slides", href: "/admin/settings/hero" },
   { label: "Trust Badges", href: "/admin/settings/badges" },
   { label: "Testimonials", href: "/admin/settings/testimonials" },
+  { label: "Recipes", href: "/admin/settings/recipes" },
   { label: "Legal Pages", href: "/admin/settings/legal" },
   { label: "Shipping & Tax", href: "/admin/settings/shipping" },
 ];

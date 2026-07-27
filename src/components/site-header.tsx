@@ -111,6 +111,9 @@ export async function SiteHeader() {
           <Link href="/our-story" className="rounded-md px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-900">
             Our Story
           </Link>
+          <Link href="/blog" className="rounded-md px-3 py-2 hover:bg-zinc-100 dark:hover:bg-zinc-900">
+            Blog
+          </Link>
         </nav>
 
         <NextForm action="/shop" className="ml-auto hidden max-w-xs flex-1 sm:flex">

@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { formatINR } from "@/lib/format";
 import { WishlistButton } from "@/components/wishlist-button";
+import { QuickAddButton } from "@/components/quick-add-button";
 
 const LOW_STOCK_THRESHOLD = 5;
 
@@ -15,7 +16,7 @@ export type ProductCardData = {
   images: { url: string }[];
   isBestSeller: boolean;
   isJainFriendly: boolean;
-  variants?: { price: number; mrp: number; stock: number }[];
+  variants?: { id: string; price: number; mrp: number; stock: number }[];
 };
 
 export function ProductCard({
@@ -38,6 +39,7 @@ export function ProductCard({
   const discount = displayMrp > displayPrice ? Math.round((1 - displayPrice / displayMrp) * 100) : 0;
   const totalStock = hasVariants ? product.variants!.reduce((sum, v) => sum + v.stock, 0) : product.stock;
   const isLowStock = totalStock > 0 && totalStock <= LOW_STOCK_THRESHOLD;
+  const defaultVariant = hasVariants ? product.variants!.find((v) => v.price === displayPrice) : undefined;
 
   return (
     <Link
@@ -91,6 +93,16 @@ export function ProductCard({
             <span className="text-xs text-zinc-400 line-through">{formatINR(displayMrp)}</span>
           )}
         </div>
+        <QuickAddButton
+          productId={product.id}
+          variantId={defaultVariant?.id}
+          variantLabel={undefined}
+          name={product.name}
+          slug={product.slug}
+          price={displayPrice}
+          image={image ?? ""}
+          disabled={totalStock <= 0}
+        />
       </div>
     </Link>
   );
