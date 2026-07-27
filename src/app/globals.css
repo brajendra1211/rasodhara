@@ -2,30 +2,42 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --background: #fefcf6;
-  --foreground: #171717;
+  --background: #faf7f2;
+  --foreground: #3f2d20;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-poppins);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-playfair);
 
-  /* Rasodhara brand palette: golden yellow + off-white, matching the product label design. */
-  --color-amber-50: #fefce8;
-  --color-amber-100: #fef9c3;
-  --color-amber-200: #fef08a;
-  --color-amber-300: #fde047;
-  --color-amber-400: #facc15;
-  --color-amber-500: #eab308;
-  --color-amber-600: #ca8a04;
-  --color-amber-700: #a16207;
-  --color-amber-800: #854d0e;
-  --color-amber-900: #713f12;
-  --color-amber-950: #422006;
+  /* Rasodhara brand palette: mustard yellow + off-white + olive accent. */
+  --color-amber-50: #fdf8ec;
+  --color-amber-100: #faeece;
+  --color-amber-200: #f3dc9d;
+  --color-amber-300: #ecc86a;
+  --color-amber-400: #e2b545;
+  --color-amber-500: #d8a324;
+  --color-amber-600: #b8860b;
+  --color-amber-700: #966d09;
+  --color-amber-800: #7a5807;
+  --color-amber-900: #5f4406;
+  --color-amber-950: #3a2a04;
 
-  --color-cream: #fefcf6;
+  --color-olive-50: #f4f5ee;
+  --color-olive-100: #e6e9d7;
+  --color-olive-200: #ccd2af;
+  --color-olive-300: #adb884;
+  --color-olive-400: #849160;
+  --color-olive-500: #5f6f3a;
+  --color-olive-600: #4c592e;
+  --color-olive-700: #3c4726;
+  --color-olive-800: #2f381e;
+  --color-olive-900: #262d19;
+
+  --color-cream: #faf7f2;
   --color-cream-card: #fffdf8;
 }
 
@@ -46,18 +58,25 @@ body {
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-heading), Georgia, serif;
+}
+
 ::selection {
-  background: #ca8a04;
+  background: #b8860b;
   color: #fff;
 }
 
 :focus-visible {
-  outline: 2px solid #ca8a04;
+  outline: 2px solid #b8860b;
   outline-offset: 2px;
 }
 
 .prose :where(a):not(:where([class~="not-prose"] *)) {
-  color: #a16207;
+  color: #966d09;
   font-weight: 500;
 }
 

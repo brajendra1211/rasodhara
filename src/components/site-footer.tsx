@@ -65,17 +65,17 @@ export async function SiteFooter() {
     .filter((s): s is typeof s & { url: string } => Boolean(s.url));
 
   return (
-    <footer className="border-t border-zinc-200 dark:border-zinc-800">
+    <footer className="border-t border-amber-100 bg-amber-50/40 dark:border-zinc-800 dark:bg-transparent">
       <TrustBadges />
 
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-8 px-4 py-10 sm:grid-cols-5 sm:px-6">
         <div className="col-span-2 flex flex-col gap-2 sm:col-span-2">
-          <span className="text-lg font-semibold tracking-tight text-amber-700 dark:text-amber-400">
+          <span className="font-heading text-lg font-bold tracking-tight text-amber-700 dark:text-amber-400">
             {settings.siteName}
           </span>
-          {settings.tagline && <p className="max-w-xs text-sm text-zinc-500 dark:text-zinc-400">{settings.tagline}</p>}
+          {settings.tagline && <p className="max-w-xs text-sm text-[#5c4a3a] dark:text-zinc-400">{settings.tagline}</p>}
           {(settings.contactEmail || settings.contactPhone || settings.contactAddress) && (
-            <div className="mt-2 flex flex-col gap-0.5 text-sm text-zinc-500 dark:text-zinc-400">
+            <div className="mt-2 flex flex-col gap-0.5 text-sm text-[#5c4a3a] dark:text-zinc-400">
               {settings.contactEmail && <span>{settings.contactEmail}</span>}
               {settings.contactPhone && <span>{settings.contactPhone}</span>}
               {settings.contactAddress && <span>{settings.contactAddress}</span>}
@@ -91,7 +91,7 @@ export async function SiteFooter() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={social.label}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-zinc-300 text-zinc-500 hover:border-amber-600 hover:text-amber-700 dark:border-zinc-700 dark:hover:text-amber-400"
+                  className="flex h-8 w-8 items-center justify-center rounded-full border border-amber-200 text-[#5c4a3a] hover:border-amber-600 hover:text-amber-700 dark:border-zinc-700 dark:hover:text-amber-400"
                 >
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.6}>
                     {social.path}
@@ -101,7 +101,7 @@ export async function SiteFooter() {
             </div>
           )}
 
-          <div className="mt-3 flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+          <div className="mt-3 flex items-center gap-2 text-xs text-[#5c4a3a] dark:text-zinc-400">
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={1.6}>
               <rect x="4" y="10" width="16" height="10" rx="2" />
               <path d="M8 10V7a4 4 0 018 0v3" strokeLinecap="round" />
@@ -112,12 +112,12 @@ export async function SiteFooter() {
 
         {footerColumns.map((column) => (
           <div key={column.title} className="flex flex-col gap-2">
-            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{column.title}</h3>
+            <h3 className="text-sm font-semibold text-[#3f2d20] dark:text-zinc-100">{column.title}</h3>
             {column.links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-sm text-zinc-500 hover:text-amber-700 dark:text-zinc-400 dark:hover:text-amber-400"
+                className="text-sm text-[#5c4a3a] hover:text-amber-700 dark:text-zinc-400 dark:hover:text-amber-400"
               >
                 {link.label}
               </Link>
@@ -127,12 +127,12 @@ export async function SiteFooter() {
 
         {legalPages.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">Policies</h3>
+            <h3 className="text-sm font-semibold text-[#3f2d20] dark:text-zinc-100">Help</h3>
             {legalPages.map((page) => (
               <Link
                 key={page.slug}
                 href={`/legal/${page.slug}`}
-                className="text-sm text-zinc-500 hover:text-amber-700 dark:text-zinc-400 dark:hover:text-amber-400"
+                className="text-sm text-[#5c4a3a] hover:text-amber-700 dark:text-zinc-400 dark:hover:text-amber-400"
               >
                 {page.title}
               </Link>
@@ -141,7 +141,7 @@ export async function SiteFooter() {
         )}
       </div>
 
-      <div className="border-t border-zinc-200 py-4 text-center text-xs text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
+      <div className="border-t border-amber-100 py-4 text-center text-xs text-[#5c4a3a] dark:border-zinc-800 dark:text-zinc-400">
         <p>{settings.footerText || `© ${new Date().getFullYear()} ${settings.siteName}. All rights reserved.`}</p>
         <p className="mt-1">
           Developed by{" "}
@@ -149,7 +149,7 @@ export async function SiteFooter() {
             href="https://urgentitsolution.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-zinc-600 hover:text-amber-700 dark:text-zinc-300 dark:hover:text-amber-400"
+            className="font-medium text-[#5c4a3a] hover:text-amber-700 dark:text-zinc-300 dark:hover:text-amber-400"
           >
             urgentitsolution.com
           </a>

@@ -8,17 +8,21 @@ import { OurStorySection } from "@/components/our-story-section";
 import { WhyShopWithUs } from "@/components/why-shop-with-us";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { NewsletterSignup } from "@/components/newsletter-signup";
+import { OurPromiseSection } from "@/components/our-promise-section";
+import { RecipesSection } from "@/components/recipes-section";
+import { SectionHeading } from "@/components/section-heading";
 import { getProductRatings } from "@/lib/reviews";
 
 export const dynamic = "force-dynamic";
 
 const FALLBACK_SLIDES: HeroSlide[] = [
   {
-    title: "Cold-pressed oils, straight from the farm",
-    subtitle: "Wood-ghani pressed, no refining, no additives — just traditional goodness.",
-    ctaLabel: "Shop oils",
-    ctaHref: "/shop?category=cold-pressed-oils",
-    image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=1600",
+    title: "Authentic Homemade Pickles & Wadis, Crafted the Traditional Way",
+    subtitle:
+      "Sun-matured recipes, premium ingredients, and authentic Indian flavors — made with care for every family.",
+    ctaLabel: "Shop Now",
+    ctaHref: "/shop",
+    image: "https://images.unsplash.com/photo-1622480916113-9000ac49b79d?w=1600",
     badge: "Best Seller",
   },
 ];
@@ -69,51 +73,50 @@ export default async function Home() {
     <div className="flex flex-1 flex-col">
       <HeroCarousel slides={heroSlides} />
 
+      <WhyShopWithUs />
+
       {categories.length > 0 && (
-        <section className="border-b border-zinc-200 py-8 dark:border-zinc-800">
-          <div className="mx-auto flex max-w-6xl gap-6 overflow-x-auto px-4 no-scrollbar sm:px-6 sm:gap-10">
-            <Link href="/shop" className="group flex shrink-0 flex-col items-center gap-2">
-              <span className="flex h-16 w-16 items-center justify-center rounded-full border border-zinc-200 bg-zinc-100 text-xs font-semibold text-zinc-500 group-hover:border-amber-600 group-hover:text-amber-700 dark:border-zinc-700 dark:bg-zinc-900 sm:h-20 sm:w-20">
-                All
-              </span>
-              <span className="text-xs font-medium text-zinc-700 group-hover:text-amber-700 dark:text-zinc-300 sm:text-sm">
-                All Products
-              </span>
-            </Link>
+        <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
+          <SectionHeading title="Shop by Category" />
+          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-5">
             {categories.map((category) => (
               <Link
                 key={category.id}
                 href={`/shop?category=${category.slug}`}
-                className="group flex shrink-0 flex-col items-center gap-2"
+                className="group flex flex-col overflow-hidden rounded-2xl border border-amber-100 bg-white transition-shadow hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-950"
               >
-                <span className="relative flex h-16 w-16 overflow-hidden rounded-full border border-zinc-200 group-hover:border-amber-600 dark:border-zinc-700 sm:h-20 sm:w-20">
+                <div className="relative aspect-square w-full overflow-hidden bg-amber-50 dark:bg-zinc-900">
                   {category.image ? (
-                    <Image src={category.image} alt={category.name} fill sizes="80px" className="object-cover" />
+                    <Image
+                      src={category.image}
+                      alt={category.name}
+                      fill
+                      sizes="200px"
+                      className="object-cover transition-transform group-hover:scale-105"
+                    />
                   ) : (
-                    <span className="flex h-full w-full items-center justify-center bg-amber-100 text-lg font-semibold text-amber-800 dark:bg-amber-950 dark:text-amber-300">
+                    <span className="flex h-full w-full items-center justify-center text-2xl font-semibold text-amber-600 dark:text-amber-400">
                       {category.name.charAt(0)}
                     </span>
                   )}
-                </span>
-                <span className="max-w-[5.5rem] text-center text-xs font-medium text-zinc-700 group-hover:text-amber-700 dark:text-zinc-300 sm:text-sm">
-                  {category.name}
-                </span>
+                </div>
+                <div className="flex flex-col items-center gap-1 p-3 text-center">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-[#3f2d20] sm:text-sm dark:text-zinc-100">
+                    {category.name}
+                  </span>
+                  <span className="text-xs font-medium text-amber-600 dark:text-amber-400">Explore Now →</span>
+                </div>
               </Link>
             ))}
           </div>
         </section>
       )}
 
-      <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-xl font-semibold">Best sellers</h2>
-          <Link href="/shop" className="text-sm font-medium text-amber-700 dark:text-amber-400">
-            View all
-          </Link>
-        </div>
+      <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
+        <SectionHeading title="Best Sellers" />
 
         {bestSellers.length === 0 ? (
-          <p className="text-sm text-zinc-500">
+          <p className="text-center text-sm text-zinc-500">
             No products yet &mdash; add some from the{" "}
             <Link href="/admin/products" className="font-medium text-amber-700 dark:text-amber-400">
               admin panel
@@ -127,16 +130,19 @@ export default async function Home() {
             ))}
           </div>
         )}
+        <div className="mt-8 flex justify-center">
+          <Link
+            href="/shop"
+            className="rounded-full border-2 border-amber-600 px-6 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-600 hover:text-white dark:text-amber-400"
+          >
+            View all products
+          </Link>
+        </div>
       </section>
 
       {newArrivals.length > 0 && (
-        <section className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
-          <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-xl font-semibold">New arrivals</h2>
-            <Link href="/shop" className="text-sm font-medium text-amber-700 dark:text-amber-400">
-              View all
-            </Link>
-          </div>
+        <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
+          <SectionHeading title="New Arrivals" />
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
             {newArrivals.map((product) => (
               <ProductCard key={product.id} product={product} wishlist={wishlist} rating={ratings.get(product.id)} />
@@ -145,11 +151,13 @@ export default async function Home() {
         </section>
       )}
 
-      <WhyShopWithUs />
+      <OurPromiseSection />
 
       <OurStorySection />
 
       <TestimonialsSection />
+
+      <RecipesSection />
 
       <NewsletterSignup />
     </div>

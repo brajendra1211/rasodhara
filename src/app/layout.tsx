@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Playfair_Display, Poppins } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { SiteHeader } from "@/components/site-header";
@@ -9,9 +9,16 @@ import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { getSiteSettings } from "@/lib/settings";
 import { getBaseUrl } from "@/lib/site-url";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const poppins = Poppins({
+  variable: "--font-poppins",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const playfairDisplay = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["600", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -86,7 +93,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${poppins.variable} ${playfairDisplay.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="pb-mobile-nav flex min-h-full flex-col bg-cream text-zinc-900 dark:bg-black dark:text-zinc-50">
         <script
