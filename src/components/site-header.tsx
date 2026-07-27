@@ -33,10 +33,10 @@ export async function SiteHeader() {
       <div className="mx-auto flex max-w-6xl items-center gap-2 px-4 py-3 sm:gap-4 sm:px-6">
         <MobileMenuButton />
 
-        <Link href="/" className="flex shrink-0 items-center gap-2 text-lg font-semibold tracking-tight text-amber-700 dark:text-amber-400">
+        <Link href="/" className="flex shrink-0 items-center gap-2 text-xl font-semibold tracking-tight text-amber-700 dark:text-amber-400">
           {settings.logoUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img src={settings.logoUrl} alt={settings.siteName} className="h-8 w-8 rounded-full object-cover" />
+            <img src={settings.logoUrl} alt={settings.siteName} className="h-12 w-12 rounded-full object-cover sm:h-14 sm:w-14" />
           ) : null}
           {settings.siteName}
         </Link>
