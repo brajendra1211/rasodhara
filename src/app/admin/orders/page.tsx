@@ -111,7 +111,11 @@ export default async function AdminOrdersPage({
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {orders.map((order) => (
               <tr key={order.id}>
-                <td className="py-3 pr-4 font-medium">#{order.id.slice(-8).toUpperCase()}</td>
+                <td className="py-3 pr-4 font-medium">
+                  <Link href={`/admin/orders/${order.id}`} className="text-amber-700 hover:underline dark:text-amber-400">
+                    #{order.id.slice(-8).toUpperCase()}
+                  </Link>
+                </td>
                 <td className="py-3 pr-4 text-zinc-500">
                   {order.user?.name ?? order.shippingName}
                   {!order.user && <span className="ml-1 text-xs text-zinc-400">(guest)</span>}

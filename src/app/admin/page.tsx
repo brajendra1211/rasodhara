@@ -154,7 +154,7 @@ export default async function AdminDashboard() {
                   {recentOrders.map((order) => (
                     <tr key={order.id}>
                       <td className="py-3 pr-4 font-medium">
-                        <Link href="/admin/orders" className="hover:underline">
+                        <Link href={`/admin/orders/${order.id}`} className="hover:underline">
                           #{order.id.slice(-8).toUpperCase()}
                         </Link>
                       </td>
