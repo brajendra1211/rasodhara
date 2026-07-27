@@ -45,6 +45,7 @@ export default async function EditProductPage({
           metaTitle: product.metaTitle ?? "",
           metaDescription: product.metaDescription ?? "",
           images: product.images.map((i) => i.url),
+          videoUrl: product.videoUrl ?? "",
           variants: product.variants.map((v) => ({ label: v.label, price: v.price, mrp: v.mrp, stock: v.stock })),
         }}
       />

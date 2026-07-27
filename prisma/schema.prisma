@@ -101,6 +101,7 @@ model Product {
   weightGrams      Int?
   ingredients      String?          @db.Text
   shelfLife        String?
+  videoUrl         String?
   metaTitle        String?
   metaDescription  String?          @db.Text
   createdAt        DateTime         @default(now())

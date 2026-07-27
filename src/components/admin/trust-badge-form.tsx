@@ -1,10 +1,17 @@
 "use client";
 
 const ICON_OPTIONS = [
-  { value: "leaf", label: "Leaf (natural)" },
-  { value: "shield", label: "Shield (secure)" },
+  { value: "leaf", label: "Leaf (natural / ingredients)" },
+  { value: "sun", label: "Sun (sun-matured)" },
+  { value: "home", label: "Home (homemade)" },
+  { value: "flask", label: "Flask (lab tested)" },
+  { value: "shield", label: "Shield (secure / safety)" },
+  { value: "ban", label: "No-symbol (no chemicals/preservatives)" },
+  { value: "badge", label: "Badge (quality tested)" },
+  { value: "hand", label: "Hand (handcrafted)" },
   { value: "truck", label: "Truck (shipping)" },
   { value: "refresh", label: "Refresh (returns)" },
+  { value: "chat", label: "Chat (support)" },
 ];
 
 export type TrustBadgeFormDefaults = {

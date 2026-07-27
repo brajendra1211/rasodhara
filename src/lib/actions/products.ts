@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import sanitizeHtml from "sanitize-html";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { saveImageAsWebp } from "@/lib/upload-image";
+import { saveImageAsWebp, saveVideoFile } from "@/lib/upload-image";
 
 const DESCRIPTION_SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   allowedTags: ["p", "br", "strong", "em", "s", "h3", "h4", "ul", "ol", "li", "blockquote", "code", "pre"],
@@ -58,6 +58,16 @@ async function productFromForm(formData: FormData) {
   const uploadedUrls = await Promise.all(uploadedFiles.map((file) => saveImageAsWebp(file, "products")));
   const images = [...parseImageUrls(String(formData.get("images") ?? "")), ...uploadedUrls];
 
+  const videoFile = formData.get("videoFile");
+  const removeVideo = formData.get("removeVideo") === "on";
+  const existingVideoUrl = String(formData.get("existingVideoUrl") ?? "").trim() || null;
+  const videoUrl =
+    videoFile instanceof File && videoFile.size > 0
+      ? await saveVideoFile(videoFile, "products")
+      : removeVideo
+        ? null
+        : existingVideoUrl;
+
   return {
     name,
     slug: slugify(String(formData.get("slug") ?? "") || name),
@@ -77,6 +87,7 @@ async function productFromForm(formData: FormData) {
     metaTitle: String(formData.get("metaTitle") ?? "").trim() || null,
     metaDescription: String(formData.get("metaDescription") ?? "").trim() || null,
     images,
+    videoUrl,
     variants: parseVariants(formData),
   };
 }
@@ -102,6 +113,7 @@ export async function createProduct(formData: FormData) {
       weightGrams: data.weightGrams,
       ingredients: data.ingredients,
       shelfLife: data.shelfLife,
+      videoUrl: data.videoUrl,
       metaTitle: data.metaTitle,
       metaDescription: data.metaDescription,
       images: { create: data.images.map((url) => ({ url })) },
@@ -137,6 +149,7 @@ export async function updateProduct(productId: string, formData: FormData) {
       weightGrams: data.weightGrams,
       ingredients: data.ingredients,
       shelfLife: data.shelfLife,
+      videoUrl: data.videoUrl,
       metaTitle: data.metaTitle,
       metaDescription: data.metaDescription,
       images: {

@@ -26,6 +26,7 @@ export type ProductFormDefaults = {
   metaTitle: string;
   metaDescription: string;
   images: string[];
+  videoUrl: string;
   variants: VariantDefaults[];
 };
 
@@ -48,6 +49,7 @@ const emptyDefaults: ProductFormDefaults = {
   metaTitle: "",
   metaDescription: "",
   images: [],
+  videoUrl: "",
   variants: [],
 };
 
@@ -64,6 +66,8 @@ export function ProductForm({
 }) {
   const [newPreviews, setNewPreviews] = useState<string[]>([]);
   const [variants, setVariants] = useState<VariantDefaults[]>(defaults.variants);
+  const [videoPreview, setVideoPreview] = useState<string | null>(defaults.videoUrl || null);
+  const [removeVideo, setRemoveVideo] = useState(false);
 
   function updateVariant(index: number, field: keyof VariantDefaults, value: string) {
     setVariants((prev) =>
@@ -383,6 +387,50 @@ export function ProductForm({
               // eslint-disable-next-line @next/next/no-img-element
               <img key={url} src={url} alt="" className="h-16 w-16 rounded-md object-cover ring-2 ring-amber-500" />
             ))}
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col gap-3 rounded-md border border-zinc-200 p-3 dark:border-zinc-800">
+        <div className="flex flex-col gap-1">
+          <label htmlFor="videoFile" className="text-sm font-medium">
+            Product video (optional)
+          </label>
+          <input
+            id="videoFile"
+            name="videoFile"
+            type="file"
+            accept="video/mp4,video/webm,video/quicktime"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setVideoPreview(URL.createObjectURL(file));
+                setRemoveVideo(false);
+              }
+            }}
+            className="text-sm file:mr-3 file:rounded-full file:border-0 file:bg-amber-700 file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-white hover:file:bg-amber-800"
+          />
+          <p className="text-xs text-zinc-500">MP4, WebM, or MOV — up to 10MB.</p>
+        </div>
+
+        <input type="hidden" name="existingVideoUrl" value={removeVideo ? "" : defaults.videoUrl} />
+
+        {videoPreview && !removeVideo && (
+          <div className="flex flex-col gap-2">
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <video src={videoPreview} controls className="h-40 w-full max-w-xs rounded-md bg-black object-contain" />
+            <label className="flex w-fit items-center gap-2 text-sm text-red-600">
+              <input
+                type="checkbox"
+                name="removeVideo"
+                checked={removeVideo}
+                onChange={(e) => {
+                  setRemoveVideo(e.target.checked);
+                  if (e.target.checked) setVideoPreview(null);
+                }}
+              />
+              Remove video
+            </label>
           </div>
         )}
       </div>

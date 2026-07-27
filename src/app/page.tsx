@@ -8,9 +8,9 @@ import { OurStorySection } from "@/components/our-story-section";
 import { WhyShopWithUs } from "@/components/why-shop-with-us";
 import { TestimonialsSection } from "@/components/testimonials-section";
 import { NewsletterSignup } from "@/components/newsletter-signup";
-import { OurPromiseSection } from "@/components/our-promise-section";
 import { RecipesSection } from "@/components/recipes-section";
 import { SectionHeading } from "@/components/section-heading";
+import { HorizontalScroller } from "@/components/horizontal-scroller";
 import { getProductRatings } from "@/lib/reviews";
 
 export const dynamic = "force-dynamic";
@@ -78,12 +78,12 @@ export default async function Home() {
       {categories.length > 0 && (
         <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
           <SectionHeading title="Shop by Category" />
-          <div className="grid grid-cols-2 gap-5 sm:grid-cols-3 md:grid-cols-5">
+          <HorizontalScroller>
             {categories.map((category) => (
               <Link
                 key={category.id}
                 href={`/shop?category=${category.slug}`}
-                className="group flex flex-col overflow-hidden rounded-2xl border border-amber-100 bg-white transition-shadow hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-950"
+                className="group flex w-36 shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-amber-100 bg-white transition-shadow hover:shadow-lg sm:w-48 dark:border-zinc-800 dark:bg-zinc-950"
               >
                 <div className="relative aspect-square w-full overflow-hidden bg-amber-50 dark:bg-zinc-900">
                   {category.image ? (
@@ -108,7 +108,7 @@ export default async function Home() {
                 </div>
               </Link>
             ))}
-          </div>
+          </HorizontalScroller>
         </section>
       )}
 
@@ -124,11 +124,13 @@ export default async function Home() {
             .
           </p>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+          <HorizontalScroller>
             {bestSellers.map((product) => (
-              <ProductCard key={product.id} product={product} wishlist={wishlist} rating={ratings.get(product.id)} />
+              <div key={product.id} className="w-40 shrink-0 snap-start sm:w-56">
+                <ProductCard product={product} wishlist={wishlist} rating={ratings.get(product.id)} />
+              </div>
             ))}
-          </div>
+          </HorizontalScroller>
         )}
         <div className="mt-8 flex justify-center">
           <Link
@@ -143,15 +145,15 @@ export default async function Home() {
       {newArrivals.length > 0 && (
         <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
           <SectionHeading title="New Arrivals" />
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
+          <HorizontalScroller>
             {newArrivals.map((product) => (
-              <ProductCard key={product.id} product={product} wishlist={wishlist} rating={ratings.get(product.id)} />
+              <div key={product.id} className="w-40 shrink-0 snap-start sm:w-56">
+                <ProductCard product={product} wishlist={wishlist} rating={ratings.get(product.id)} />
+              </div>
             ))}
-          </div>
+          </HorizontalScroller>
         </section>
       )}
-
-      <OurPromiseSection />
 
       <OurStorySection />
 

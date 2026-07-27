@@ -281,7 +281,7 @@ export async function deleteHeroSlide(id: string) {
 
 // Trust badges
 
-const ICON_KEYS = ["leaf", "shield", "truck", "refresh"] as const;
+const ICON_KEYS = ["leaf", "sun", "home", "flask", "shield", "ban", "badge", "hand", "truck", "refresh", "chat"] as const;
 
 function trustBadgeFromForm(formData: FormData) {
   const icon = String(formData.get("icon") ?? "leaf");
