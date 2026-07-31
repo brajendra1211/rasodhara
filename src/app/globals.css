@@ -12,7 +12,13 @@
   --font-sans: var(--font-poppins);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-playfair);
+}
 
+/* Not `inline`, on purpose: these become real runtime CSS variables (rather
+   than being baked into the compiled utility CSS as literal hex values), so
+   the admin-configurable theme color can override --color-amber-* at
+   request time. See src/lib/theme-color.ts and the <style> tag in layout.tsx. */
+@theme {
   /* Rasodhara brand palette: mustard yellow + off-white + olive accent. */
   --color-amber-50: #fdf8ec;
   --color-amber-100: #faeece;
@@ -66,17 +72,17 @@ h4 {
 }
 
 ::selection {
-  background: #b8860b;
+  background: var(--color-amber-600);
   color: #fff;
 }
 
 :focus-visible {
-  outline: 2px solid #b8860b;
+  outline: 2px solid var(--color-amber-600);
   outline-offset: 2px;
 }
 
 .prose :where(a):not(:where([class~="not-prose"] *)) {
-  color: #966d09;
+  color: var(--color-amber-700);
   font-weight: 500;
 }
 

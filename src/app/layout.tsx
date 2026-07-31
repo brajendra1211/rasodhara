@@ -8,6 +8,7 @@ import { CartDrawer } from "@/components/cart-drawer";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { getSiteSettings } from "@/lib/settings";
 import { getBaseUrl } from "@/lib/site-url";
+import { generateColorRamp, isValidHexColor, DEFAULT_THEME_COLOR } from "@/lib/theme-color";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -72,6 +73,13 @@ export default async function RootLayout({
   const settings = await getSiteSettings();
   const baseUrl = getBaseUrl(settings.canonicalDomain);
 
+  const themeColorRamp = generateColorRamp(
+    isValidHexColor(settings.themeColor) ? settings.themeColor : DEFAULT_THEME_COLOR
+  );
+  const themeColorCss = `:root{${Object.entries(themeColorRamp)
+    .map(([step, hex]) => `--color-amber-${step}:${hex};`)
+    .join("")}}`;
+
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -100,6 +108,7 @@ export default async function RootLayout({
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
         />
+        <style dangerouslySetInnerHTML={{ __html: themeColorCss }} />
         <AuthProvider>
           <SiteHeader />
           <main className="flex flex-1 flex-col">{children}</main>

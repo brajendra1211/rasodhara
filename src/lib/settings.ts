@@ -32,6 +32,7 @@ const DEFAULT_SETTINGS = {
   shippingFlatFee: 0,
   freeShippingThreshold: null as number | null,
   gstRatePercent: 0,
+  themeColor: "#b8860b",
 };
 
 export async function getSiteSettings() {

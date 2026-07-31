@@ -6,6 +6,7 @@ import sanitizeHtml from "sanitize-html";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { saveImageAsWebp, saveVideoFile } from "@/lib/upload-image";
+import { isValidHexColor, DEFAULT_THEME_COLOR } from "@/lib/theme-color";
 
 const RICH_TEXT_SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   allowedTags: ["p", "br", "strong", "em", "s", "h3", "h4", "ul", "ol", "li", "blockquote", "code", "pre"],
@@ -116,6 +117,21 @@ export async function updateStorySection(formData: FormData) {
     where: { id: "singleton" },
     update: data,
     create: { id: "singleton", ...data },
+  });
+
+  revalidateSiteWide();
+}
+
+export async function updateThemeSettings(formData: FormData) {
+  await requireAdmin();
+
+  const themeColorRaw = String(formData.get("themeColor") ?? "").trim();
+  const themeColor = isValidHexColor(themeColorRaw) ? themeColorRaw : DEFAULT_THEME_COLOR;
+
+  await prisma.siteSettings.upsert({
+    where: { id: "singleton" },
+    update: { themeColor },
+    create: { id: "singleton", themeColor },
   });
 
   revalidateSiteWide();

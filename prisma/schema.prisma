@@ -232,6 +232,7 @@ model SiteSettings {
   shippingFlatFee        Int      @default(0)
   freeShippingThreshold  Int?
   gstRatePercent         Int      @default(0)
+  themeColor             String   @default("#b8860b")
   updatedAt              DateTime @updatedAt
 }
 
