@@ -42,7 +42,7 @@ export async function RecipesSection() {
                     alt={recipe.title}
                     fill
                     sizes="(min-width: 640px) 33vw, 100vw"
-                    className="object-cover transition-transform group-hover:scale-105"
+                    className="object-contain transition-transform group-hover:scale-105"
                   />
                 )}
               </div>

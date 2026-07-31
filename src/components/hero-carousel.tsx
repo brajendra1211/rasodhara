@@ -48,11 +48,19 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
           >
             <Image
               src={slide.image}
+              alt=""
+              aria-hidden="true"
+              fill
+              sizes="100vw"
+              className="scale-110 object-cover blur-2xl brightness-75"
+            />
+            <Image
+              src={slide.image}
               alt={slide.title}
               fill
               sizes="100vw"
               priority={i === 0}
-              className="object-cover"
+              className="object-contain"
             />
           </div>
         ))}

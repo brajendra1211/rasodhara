@@ -23,7 +23,7 @@ export async function OurStorySection() {
         ) : (
           settings.storyImage && (
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl">
-              <Image src={settings.storyImage} alt={settings.storyTitle} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+              <Image src={settings.storyImage} alt={settings.storyTitle} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-contain" />
             </div>
           )
         )}
