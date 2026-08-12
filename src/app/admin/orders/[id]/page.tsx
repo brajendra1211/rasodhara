@@ -4,6 +4,7 @@ import Image from "next/image";
 import { prisma } from "@/lib/prisma";
 import { formatINR } from "@/lib/format";
 import { OrderStatusSelect } from "@/components/admin/order-status-select";
+import { ShiprocketShipmentPanel } from "@/components/admin/shiprocket-shipment-panel";
 
 export default async function AdminOrderDetailPage({
   params,
@@ -117,7 +118,22 @@ export default async function AdminOrderDetailPage({
               <p className="font-medium">{order.shippingName}</p>
               <p>{order.shippingPhone}</p>
               <p className="whitespace-pre-line text-zinc-500">{order.shippingAddress}</p>
+              <p className="text-zinc-500">
+                {order.shippingCity}, {order.shippingState} &ndash; {order.shippingPincode}
+              </p>
             </div>
+          </div>
+
+          <div>
+            <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-zinc-500">Shipment</h2>
+            <ShiprocketShipmentPanel
+              orderId={order.id}
+              shiprocketOrderId={order.shiprocketOrderId}
+              shiprocketAwbCode={order.shiprocketAwbCode}
+              shiprocketCourierName={order.shiprocketCourierName}
+              shiprocketTrackingUrl={order.shiprocketTrackingUrl}
+              shiprocketError={order.shiprocketError}
+            />
           </div>
 
           {(order.razorpayOrderId || order.razorpayPaymentId) && (

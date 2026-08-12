@@ -19,9 +19,12 @@ export async function createAddress(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const phone = String(formData.get("phone") ?? "").trim();
   const address = String(formData.get("address") ?? "").trim();
+  const city = String(formData.get("city") ?? "").trim();
+  const state = String(formData.get("state") ?? "").trim();
+  const pincode = String(formData.get("pincode") ?? "").trim();
   const isDefault = formData.get("isDefault") === "on";
 
-  if (!name || !phone || !address) return;
+  if (!name || !phone || !address || !city || !state || !pincode) return;
 
   if (isDefault) {
     await prisma.address.updateMany({ where: { userId }, data: { isDefault: false } });
@@ -30,7 +33,7 @@ export async function createAddress(formData: FormData) {
   const existingCount = await prisma.address.count({ where: { userId } });
 
   await prisma.address.create({
-    data: { userId, label, name, phone, address, isDefault: isDefault || existingCount === 0 },
+    data: { userId, label, name, phone, address, city, state, pincode, isDefault: isDefault || existingCount === 0 },
   });
 
   revalidatePath("/account/addresses");

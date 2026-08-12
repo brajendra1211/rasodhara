@@ -57,6 +57,9 @@ model Address {
   name      String
   phone     String
   address   String   @db.Text
+  city      String   @default("")
+  state     String   @default("")
+  pincode   String   @default("")
   isDefault Boolean  @default(false)
   createdAt DateTime @default(now())
 }
@@ -183,8 +186,17 @@ model Order {
   shippingName      String
   shippingPhone     String
   shippingAddress   String        @db.Text
+  shippingCity      String        @default("")
+  shippingState     String        @default("")
+  shippingPincode   String        @default("")
   razorpayOrderId   String?
   razorpayPaymentId String?
+  shiprocketOrderId     String?
+  shiprocketShipmentId  String?
+  shiprocketAwbCode     String?
+  shiprocketCourierName String?
+  shiprocketTrackingUrl String?
+  shiprocketError       String?   @db.Text
   createdAt         DateTime      @default(now())
 }
 
@@ -233,6 +245,16 @@ model SiteSettings {
   freeShippingThreshold  Int?
   gstRatePercent         Int      @default(0)
   themeColor             String   @default("#b8860b")
+  razorpayEnabled        Boolean  @default(false)
+  razorpayKeyId          String?
+  razorpayKeySecret      String?
+  shiprocketEnabled           Boolean @default(false)
+  shiprocketEmail             String?
+  shiprocketPassword          String?
+  shiprocketPackageWeightGrams Int    @default(500)
+  shiprocketPackageLengthCm    Int    @default(20)
+  shiprocketPackageBreadthCm   Int    @default(15)
+  shiprocketPackageHeightCm    Int    @default(10)
   updatedAt              DateTime @updatedAt
 }
 

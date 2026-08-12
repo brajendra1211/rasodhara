@@ -7,6 +7,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { saveImageAsWebp, saveVideoFile } from "@/lib/upload-image";
 import { isValidHexColor, DEFAULT_THEME_COLOR } from "@/lib/theme-color";
+import { encryptSecret } from "@/lib/crypto-secret";
 
 const RICH_TEXT_SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
   allowedTags: ["p", "br", "strong", "em", "s", "h3", "h4", "ul", "ol", "li", "blockquote", "code", "pre"],
@@ -135,6 +136,58 @@ export async function updateThemeSettings(formData: FormData) {
   });
 
   revalidateSiteWide();
+}
+
+export async function updateRazorpaySettings(formData: FormData) {
+  await requireAdmin();
+
+  const existing = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
+
+  const keyId = String(formData.get("razorpayKeyId") ?? "").trim() || null;
+  const keySecretRaw = String(formData.get("razorpayKeySecret") ?? "").trim();
+  const keySecret = keySecretRaw ? encryptSecret(keySecretRaw) : existing?.razorpayKeySecret || null;
+
+  const data = {
+    razorpayEnabled: formData.get("razorpayEnabled") === "on",
+    razorpayKeyId: keyId,
+    razorpayKeySecret: keySecret,
+  };
+
+  await prisma.siteSettings.upsert({
+    where: { id: "singleton" },
+    update: data,
+    create: { id: "singleton", ...data },
+  });
+
+  revalidatePath("/admin/settings/payments");
+}
+
+export async function updateShiprocketSettings(formData: FormData) {
+  await requireAdmin();
+
+  const existing = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
+
+  const email = String(formData.get("shiprocketEmail") ?? "").trim() || null;
+  const passwordRaw = String(formData.get("shiprocketPassword") ?? "").trim();
+  const password = passwordRaw ? encryptSecret(passwordRaw) : existing?.shiprocketPassword || null;
+
+  const data = {
+    shiprocketEnabled: formData.get("shiprocketEnabled") === "on",
+    shiprocketEmail: email,
+    shiprocketPassword: password,
+    shiprocketPackageWeightGrams: Math.max(1, Math.round(Number(formData.get("shiprocketPackageWeightGrams") ?? 500))),
+    shiprocketPackageLengthCm: Math.max(1, Math.round(Number(formData.get("shiprocketPackageLengthCm") ?? 20))),
+    shiprocketPackageBreadthCm: Math.max(1, Math.round(Number(formData.get("shiprocketPackageBreadthCm") ?? 15))),
+    shiprocketPackageHeightCm: Math.max(1, Math.round(Number(formData.get("shiprocketPackageHeightCm") ?? 10))),
+  };
+
+  await prisma.siteSettings.upsert({
+    where: { id: "singleton" },
+    update: data,
+    create: { id: "singleton", ...data },
+  });
+
+  revalidatePath("/admin/settings/shiprocket");
 }
 
 export async function updateWhyUsSection(formData: FormData) {

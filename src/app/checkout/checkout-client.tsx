@@ -19,6 +19,9 @@ type SavedAddress = {
   name: string;
   phone: string;
   address: string;
+  city: string;
+  state: string;
+  pincode: string;
   isDefault: boolean;
 };
 
@@ -49,6 +52,9 @@ export function CheckoutClient({
   const [name, setName] = useState(defaultAddress?.name ?? "");
   const [phone, setPhone] = useState(defaultAddress?.phone ?? "");
   const [address, setAddress] = useState(defaultAddress?.address ?? "");
+  const [city, setCity] = useState(defaultAddress?.city ?? "");
+  const [state, setState] = useState(defaultAddress?.state ?? "");
+  const [pincode, setPincode] = useState(defaultAddress?.pincode ?? "");
   const [guestEmail, setGuestEmail] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<"RAZORPAY" | "COD">("RAZORPAY");
   const [error, setError] = useState<string | null>(null);
@@ -76,6 +82,9 @@ export function CheckoutClient({
       setName("");
       setPhone("");
       setAddress("");
+      setCity("");
+      setState("");
+      setPincode("");
       return;
     }
     const saved = addresses.find((a) => a.id === id);
@@ -83,6 +92,9 @@ export function CheckoutClient({
       setName(saved.name);
       setPhone(saved.phone);
       setAddress(saved.address);
+      setCity(saved.city);
+      setState(saved.state);
+      setPincode(saved.pincode);
     }
   }
 
@@ -120,8 +132,12 @@ export function CheckoutClient({
   async function handlePlaceOrder() {
     setError(null);
 
-    if (!name || !phone || !address) {
+    if (!name || !phone || !address || !city || !state || !pincode) {
       setError("Please fill in all shipping details.");
+      return;
+    }
+    if (!/^\d{6}$/.test(pincode)) {
+      setError("Please enter a valid 6-digit pincode.");
       return;
     }
     if (!loggedIn && !/^\S+@\S+\.\S+$/.test(guestEmail)) {
@@ -148,6 +164,9 @@ export function CheckoutClient({
           shippingName: name,
           shippingPhone: phone,
           shippingAddress: address,
+          shippingCity: city,
+          shippingState: state,
+          shippingPincode: pincode,
           couponCode: appliedCoupon?.code,
           paymentMethod,
           guestEmail: loggedIn ? undefined : guestEmail,
@@ -293,7 +312,43 @@ export function CheckoutClient({
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               rows={4}
+              placeholder="House no., street, locality"
               className="rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <label htmlFor="city" className="text-sm font-medium">
+                City
+              </label>
+              <input
+                id="city"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                className="rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label htmlFor="state" className="text-sm font-medium">
+                State
+              </label>
+              <input
+                id="state"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+                className="rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+              />
+            </div>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="pincode" className="text-sm font-medium">
+              Pincode
+            </label>
+            <input
+              id="pincode"
+              value={pincode}
+              onChange={(e) => setPincode(e.target.value)}
+              className="max-w-[10rem] rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
             />
           </div>
 

@@ -42,6 +42,9 @@ export default async function AccountAddressesPage() {
                 </div>
                 <p className="mt-1 text-zinc-500">{addr.name} &middot; {addr.phone}</p>
                 <p className="whitespace-pre-line text-zinc-500">{addr.address}</p>
+                <p className="text-zinc-500">
+                  {addr.city}, {addr.state} &ndash; {addr.pincode}
+                </p>
               </div>
               <div className="flex shrink-0 flex-col items-end gap-2">
                 {!addr.isDefault && (
@@ -106,7 +109,45 @@ export default async function AccountAddressesPage() {
             name="address"
             required
             rows={3}
+            placeholder="House no., street, locality"
             className="rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1">
+            <label htmlFor="city" className="text-sm font-medium">
+              City
+            </label>
+            <input
+              id="city"
+              name="city"
+              required
+              className="rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label htmlFor="state" className="text-sm font-medium">
+              State
+            </label>
+            <input
+              id="state"
+              name="state"
+              required
+              className="rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
+            />
+          </div>
+        </div>
+        <div className="flex flex-col gap-1">
+          <label htmlFor="pincode" className="text-sm font-medium">
+            Pincode
+          </label>
+          <input
+            id="pincode"
+            name="pincode"
+            required
+            pattern="[0-9]{6}"
+            title="6-digit pincode"
+            className="max-w-[10rem] rounded-md border border-zinc-300 px-3 py-2 text-sm dark:border-zinc-700 dark:bg-zinc-900"
           />
         </div>
         <label className="flex items-center gap-2 text-sm font-medium">

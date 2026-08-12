@@ -33,6 +33,16 @@ const DEFAULT_SETTINGS = {
   freeShippingThreshold: null as number | null,
   gstRatePercent: 0,
   themeColor: "#b8860b",
+  razorpayEnabled: false,
+  razorpayKeyId: null as string | null,
+  razorpayKeySecret: null as string | null,
+  shiprocketEnabled: false,
+  shiprocketEmail: null as string | null,
+  shiprocketPassword: null as string | null,
+  shiprocketPackageWeightGrams: 500,
+  shiprocketPackageLengthCm: 20,
+  shiprocketPackageBreadthCm: 15,
+  shiprocketPackageHeightCm: 10,
 };
 
 export async function getSiteSettings() {

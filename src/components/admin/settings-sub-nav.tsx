@@ -13,6 +13,8 @@ const TABS = [
   { label: "Recipes", href: "/admin/settings/recipes" },
   { label: "Legal Pages", href: "/admin/settings/legal" },
   { label: "Shipping & Tax", href: "/admin/settings/shipping" },
+  { label: "Payments", href: "/admin/settings/payments" },
+  { label: "Shiprocket", href: "/admin/settings/shiprocket" },
 ];
 
 export function SettingsSubNav({ active }: { active: string }) {

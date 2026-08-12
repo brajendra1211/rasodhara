@@ -3,6 +3,8 @@ import crypto from "node:crypto";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { sendOrderStatusEmail } from "@/lib/order-emails";
+import { getRazorpayCredentials } from "@/lib/payment-credentials";
+import { createShipmentForOrder } from "@/lib/shipment";
 
 type VerifyBody = {
   orderId: string;
@@ -31,13 +33,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ success: true, orderId: order.id });
   }
 
-  const secret = process.env.RAZORPAY_KEY_SECRET;
-  if (!secret) {
+  const { keySecret } = await getRazorpayCredentials();
+  if (!keySecret) {
     return NextResponse.json({ error: "Payments are not configured" }, { status: 500 });
   }
 
   const expectedSignature = crypto
-    .createHmac("sha256", secret)
+    .createHmac("sha256", keySecret)
     .update(`${razorpay_order_id}|${razorpay_payment_id}`)
     .digest("hex");
 
@@ -67,6 +69,7 @@ export async function POST(request: Request) {
   ]);
 
   await sendOrderStatusEmail(order.id, "PAID");
+  createShipmentForOrder(order.id).catch(() => {});
 
   return NextResponse.json({ success: true, orderId: order.id });
 }

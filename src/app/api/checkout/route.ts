@@ -5,7 +5,9 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { validateCoupon } from "@/lib/coupons";
 import { getSiteSettings } from "@/lib/settings";
+import { getRazorpayCredentials } from "@/lib/payment-credentials";
 import { computeOrderTotals } from "@/lib/order-totals";
+import { createShipmentForOrder } from "@/lib/shipment";
 import { sendCodOrderConfirmationEmail } from "@/lib/order-emails";
 
 type CheckoutBody = {
@@ -13,6 +15,9 @@ type CheckoutBody = {
   shippingName: string;
   shippingPhone: string;
   shippingAddress: string;
+  shippingCity: string;
+  shippingState: string;
+  shippingPincode: string;
   couponCode?: string;
   paymentMethod?: "RAZORPAY" | "COD";
   guestEmail?: string;
@@ -23,11 +28,14 @@ export async function POST(request: Request) {
   const userId = session?.user?.id ?? null;
 
   const body = (await request.json()) as CheckoutBody;
-  const { items, shippingName, shippingPhone, shippingAddress, couponCode, guestEmail } = body;
+  const { items, shippingName, shippingPhone, shippingAddress, shippingCity, shippingState, shippingPincode, couponCode, guestEmail } = body;
   const paymentMethod = body.paymentMethod === "COD" ? "COD" : "RAZORPAY";
 
-  if (!items?.length || !shippingName || !shippingPhone || !shippingAddress) {
+  if (!items?.length || !shippingName || !shippingPhone || !shippingAddress || !shippingCity || !shippingState || !shippingPincode) {
     return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+  }
+  if (!/^\d{6}$/.test(shippingPincode)) {
+    return NextResponse.json({ error: "Please enter a valid 6-digit pincode" }, { status: 400 });
   }
 
   if (!userId && (!guestEmail || !/^\S+@\S+\.\S+$/.test(guestEmail))) {
@@ -123,6 +131,9 @@ export async function POST(request: Request) {
       shippingName,
       shippingPhone,
       shippingAddress,
+      shippingCity,
+      shippingState,
+      shippingPincode,
       items: {
         create: resolved.map((line) => ({
           productId: line.productId,
@@ -148,6 +159,7 @@ export async function POST(request: Request) {
     ]);
 
     await sendCodOrderConfirmationEmail(order.id);
+    createShipmentForOrder(order.id).catch(() => {});
 
     return NextResponse.json({
       orderId: order.id,
@@ -156,16 +168,18 @@ export async function POST(request: Request) {
     });
   }
 
-  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
+  const { enabled, keyId, keySecret } = await getRazorpayCredentials();
+
+  if (!enabled || !keyId || !keySecret) {
     return NextResponse.json(
-      { error: "Online payments are not configured yet. Set RAZORPAY_KEY_ID and RAZORPAY_KEY_SECRET." },
+      { error: "Online payments are not configured yet. Add your Razorpay keys in Admin → Settings → Payments." },
       { status: 500 }
     );
   }
 
   const razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET,
+    key_id: keyId,
+    key_secret: keySecret,
   });
 
   const razorpayOrder = await razorpay.orders.create({
@@ -185,7 +199,7 @@ export async function POST(request: Request) {
     razorpayOrderId: razorpayOrder.id,
     amount: totalAmount,
     currency: "INR",
-    keyId: process.env.RAZORPAY_KEY_ID,
+    keyId,
     guestAccessToken,
   });
 }
