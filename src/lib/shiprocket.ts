@@ -14,7 +14,9 @@ async function getShiprocketToken(email: string, password: string): Promise<stri
   });
 
   if (!res.ok) {
-    throw new Error(`Shiprocket login failed (${res.status})`);
+    const body = await res.json().catch(() => null);
+    const detail = typeof body?.message === "string" ? body.message : `HTTP ${res.status}`;
+    throw new Error(`Shiprocket login failed: ${detail}`);
   }
 
   const data = (await res.json()) as { token?: string };
