@@ -28,6 +28,36 @@ async function getShiprocketToken(email: string, password: string): Promise<stri
   return data.token;
 }
 
+let cachedPickupLocation: { name: string; expiresAt: number } | null = null;
+
+async function getPickupLocationName(token: string): Promise<string> {
+  if (cachedPickupLocation && cachedPickupLocation.expiresAt > Date.now()) {
+    return cachedPickupLocation.name;
+  }
+
+  const res = await fetch(`${BASE_URL}/settings/company/pickup`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  if (!res.ok) {
+    throw new Error(`Could not fetch Shiprocket pickup locations (HTTP ${res.status})`);
+  }
+
+  const data = await res.json();
+  const locations = data?.data?.shipping_address as
+    | Array<{ pickup_location: string; is_primary_location?: number }>
+    | null
+    | undefined;
+
+  if (!locations?.length) {
+    throw new Error("No pickup location is configured in Shiprocket. Add one under Settings > Pickup Addresses.");
+  }
+
+  const primary = locations.find((l) => l.is_primary_location === 1) ?? locations[0];
+  cachedPickupLocation = { name: primary.pickup_location, expiresAt: Date.now() + 60 * 60 * 1000 };
+  return primary.pickup_location;
+}
+
 export type ShiprocketOrderItem = {
   name: string;
   sku: string;
@@ -71,13 +101,14 @@ export async function createShiprocketOrder(
   input: ShiprocketOrderInput
 ): Promise<ShiprocketOrderResult> {
   const token = await getShiprocketToken(credentials.email, credentials.password);
+  const pickupLocation = await getPickupLocationName(token);
 
   const [firstName, ...rest] = input.customerName.trim().split(/\s+/);
 
   const payload = {
     order_id: input.orderId,
     order_date: formatShiprocketDate(input.orderDate),
-    pickup_location: "Primary",
+    pickup_location: pickupLocation,
     billing_customer_name: firstName || input.customerName,
     billing_last_name: rest.join(" "),
     billing_address: input.address,
