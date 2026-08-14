@@ -245,6 +245,7 @@ model SiteSettings {
   freeShippingThreshold  Int?
   gstRatePercent         Int      @default(0)
   themeColor             String   @default("#b8860b")
+  headingFont            String   @default("playfair")
   razorpayEnabled        Boolean  @default(false)
   razorpayKeyId          String?
   razorpayKeySecret      String?

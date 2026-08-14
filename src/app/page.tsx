@@ -70,7 +70,7 @@ export default async function Home() {
       <WhyShopWithUs />
 
       {categories.length > 0 && (
-        <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
+        <section className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
           <SectionHeading title="Shop by Category" />
           <HorizontalScroller>
             {categories.map((category) => (
@@ -85,7 +85,7 @@ export default async function Home() {
                       src={category.image}
                       alt={category.name}
                       fill
-                      sizes="200px"
+                      sizes="(min-width: 640px) 192px, 144px"
                       className="object-cover transition-transform group-hover:scale-105"
                     />
                   ) : (
@@ -106,7 +106,7 @@ export default async function Home() {
         </section>
       )}
 
-      <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
+      <section className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
         <SectionHeading title="Best Sellers" />
 
         {bestSellers.length === 0 ? (

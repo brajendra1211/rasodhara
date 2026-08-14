@@ -4,6 +4,7 @@
 :root {
   --background: #faf7f2;
   --foreground: #3f2d20;
+  --heading-font: var(--font-playfair);
 }
 
 @theme inline {
@@ -68,7 +69,7 @@ h1,
 h2,
 h3,
 h4 {
-  font-family: var(--font-heading), Georgia, serif;
+  font-family: var(--heading-font), Georgia, serif;
 }
 
 ::selection {

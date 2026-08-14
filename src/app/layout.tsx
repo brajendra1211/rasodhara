@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist_Mono, Playfair_Display, Poppins } from "next/font/google";
+import { Geist_Mono, Playfair_Display, Poppins, Merriweather, Montserrat } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/components/providers/auth-provider";
 import { SiteHeader } from "@/components/site-header";
@@ -9,6 +9,7 @@ import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { getSiteSettings } from "@/lib/settings";
 import { getBaseUrl } from "@/lib/site-url";
 import { generateColorRamp, isValidHexColor, DEFAULT_THEME_COLOR } from "@/lib/theme-color";
+import { getHeadingFontCssVar } from "@/lib/heading-font";
 
 const poppins = Poppins({
   variable: "--font-poppins",
@@ -18,6 +19,18 @@ const poppins = Poppins({
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["600", "700"],
+});
+
+const merriweather = Merriweather({
+  variable: "--font-merriweather",
+  subsets: ["latin"],
+  weight: ["700"],
+});
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
   weight: ["600", "700"],
 });
@@ -76,9 +89,10 @@ export default async function RootLayout({
   const themeColorRamp = generateColorRamp(
     isValidHexColor(settings.themeColor) ? settings.themeColor : DEFAULT_THEME_COLOR
   );
+  const headingFontVar = getHeadingFontCssVar(settings.headingFont);
   const themeColorCss = `:root{${Object.entries(themeColorRamp)
     .map(([step, hex]) => `--color-amber-${step}:${hex};`)
-    .join("")}}`;
+    .join("")}--heading-font:${headingFontVar};}`;
 
   const organizationJsonLd = {
     "@context": "https://schema.org",
@@ -101,7 +115,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${poppins.variable} ${playfairDisplay.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${poppins.variable} ${playfairDisplay.variable} ${merriweather.variable} ${montserrat.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="pb-mobile-nav flex min-h-full flex-col bg-cream text-zinc-900 dark:bg-black dark:text-zinc-50">
         <script

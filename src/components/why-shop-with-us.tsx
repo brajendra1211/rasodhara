@@ -17,7 +17,7 @@ export async function WhyShopWithUs() {
   const badges = rows.length > 0 ? rows : FALLBACK_WHY_ITEMS;
 
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 py-14 sm:px-6">
+    <section className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
       <div className="grid grid-cols-2 gap-8 sm:grid-cols-4">
         {badges.map((badge) => (
           <div key={badge.id} className="flex flex-col items-center gap-3 text-center">

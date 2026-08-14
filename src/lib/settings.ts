@@ -33,6 +33,7 @@ const DEFAULT_SETTINGS = {
   freeShippingThreshold: null as number | null,
   gstRatePercent: 0,
   themeColor: "#b8860b",
+  headingFont: "playfair",
   razorpayEnabled: false,
   razorpayKeyId: null as string | null,
   razorpayKeySecret: null as string | null,

@@ -7,6 +7,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { saveImageAsWebp, saveVideoFile } from "@/lib/upload-image";
 import { isValidHexColor, DEFAULT_THEME_COLOR } from "@/lib/theme-color";
+import { isValidHeadingFont, DEFAULT_HEADING_FONT } from "@/lib/heading-font";
 import { encryptSecret } from "@/lib/crypto-secret";
 
 const RICH_TEXT_SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
@@ -188,6 +189,21 @@ export async function updateShiprocketSettings(formData: FormData) {
   });
 
   revalidatePath("/admin/settings/shiprocket");
+}
+
+export async function updateHeadingFontSettings(formData: FormData) {
+  await requireAdmin();
+
+  const headingFontRaw = String(formData.get("headingFont") ?? "").trim();
+  const headingFont = isValidHeadingFont(headingFontRaw) ? headingFontRaw : DEFAULT_HEADING_FONT;
+
+  await prisma.siteSettings.upsert({
+    where: { id: "singleton" },
+    update: { headingFont },
+    create: { id: "singleton", headingFont },
+  });
+
+  revalidateSiteWide();
 }
 
 export async function updateWhyUsSection(formData: FormData) {
