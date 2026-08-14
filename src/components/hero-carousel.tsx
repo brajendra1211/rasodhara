@@ -60,45 +60,41 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
               fill
               sizes="100vw"
               priority={i === 0}
-              className="object-contain"
+              className="object-cover sm:object-contain"
             />
           </div>
         ))}
 
-        {active.badge && (
-          <span className="absolute left-4 top-4 rounded-full bg-amber-500 px-3 py-1 text-xs font-semibold text-white sm:hidden">
-            {active.badge}
-          </span>
-        )}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent sm:from-black/55 sm:via-black/10 sm:to-transparent" />
 
-        <div className="absolute inset-0 hidden bg-gradient-to-r from-black/55 via-black/10 to-transparent sm:block" />
-
-        <div className="absolute inset-0 hidden flex-col justify-center gap-4 px-16 sm:flex">
-          <div className="flex max-w-lg flex-col items-start gap-4">
+        <div className="absolute inset-0 flex flex-col justify-center gap-3 px-6 sm:gap-4 sm:px-16">
+          <div className="flex max-w-lg flex-col items-start gap-3 sm:gap-4">
             {active.badge && (
-              <span className="rounded-full bg-amber-500 px-3 py-1 text-xs font-semibold text-white">
+              <span className="rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-semibold text-white sm:px-3 sm:text-xs">
                 {active.badge}
               </span>
             )}
-            <h1 className="text-5xl leading-tight font-bold text-white drop-shadow-sm">{active.title}</h1>
-            <p className="max-w-md text-base text-zinc-100 drop-shadow-sm">{active.subtitle}</p>
-            <div className="flex flex-wrap items-center gap-3">
+            <h1 className="text-2xl leading-tight font-bold text-white drop-shadow-sm sm:text-5xl">
+              {active.title}
+            </h1>
+            <p className="max-w-md text-xs text-zinc-100 drop-shadow-sm sm:text-base">{active.subtitle}</p>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
               <Link
                 href={active.ctaHref}
-                className="rounded-full bg-amber-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-amber-700"
+                className="rounded-full bg-amber-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-amber-700 sm:px-6 sm:py-2.5 sm:text-sm"
               >
                 {active.ctaLabel}
               </Link>
               <Link
                 href="/our-story"
-                className="rounded-full border-2 border-white px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-[#3f2d20]"
+                className="rounded-full border-2 border-white px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-white hover:text-[#3f2d20] sm:px-6 sm:py-2.5 sm:text-sm"
               >
                 Explore Our Story
               </Link>
             </div>
 
             {slides.length > 1 && (
-              <div className="flex gap-2 pt-2">
+              <div className="flex gap-2 pt-1 sm:pt-2">
                 {slides.map((slide, i) => (
                   <button
                     key={slide.title}
@@ -138,41 +134,6 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
               </svg>
             </button>
           </>
-        )}
-      </div>
-
-      <div className="flex flex-col items-start gap-4 bg-[#3f2d20] px-6 py-6 text-white sm:hidden">
-        <h1 className="text-2xl leading-tight font-bold">{active.title}</h1>
-        <p className="text-sm text-zinc-200">{active.subtitle}</p>
-        <div className="flex flex-wrap items-center gap-3">
-          <Link
-            href={active.ctaHref}
-            className="rounded-full bg-amber-600 px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-amber-700"
-          >
-            {active.ctaLabel}
-          </Link>
-          <Link
-            href="/our-story"
-            className="rounded-full border-2 border-white px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-[#3f2d20]"
-          >
-            Explore Our Story
-          </Link>
-        </div>
-
-        {slides.length > 1 && (
-          <div className="flex gap-2">
-            {slides.map((slide, i) => (
-              <button
-                key={slide.title}
-                type="button"
-                aria-label={`Go to slide ${i + 1}`}
-                onClick={() => setIndex(i)}
-                className={`h-2 rounded-full transition-all ${
-                  i === index ? "w-6 bg-amber-500" : "w-2 bg-white/40 hover:bg-white/70"
-                }`}
-              />
-            ))}
-          </div>
         )}
       </div>
 
