@@ -113,9 +113,9 @@ export default async function AdminShiprocketSettingsPage() {
           </div>
         </div>
         <p className="-mt-2 text-xs text-zinc-500">
-          Used as the shipment&apos;s package weight/dimensions. Per-product weight (from each product&apos;s
-          &ldquo;Weight&rdquo; field) is added on top when set; the default weight above is used as a floor and for
-          products without a weight.
+          Package dimensions above are always used. Shipment weight is the sum of each item&apos;s product
+          &ldquo;Weight&rdquo; (from the product page) &times; quantity; the default weight above is only used as a
+          fallback for products that don&apos;t have a weight set.
         </p>
 
         <button

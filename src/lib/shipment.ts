@@ -50,7 +50,7 @@ export async function createShipmentForOrder(orderId: string): Promise<{ success
           units: item.quantity,
           sellingPrice: item.price / 100,
         })),
-        weightKg: Math.max(totalWeightGrams, credentials.packageWeightGrams) / 1000,
+        weightKg: totalWeightGrams / 1000,
         lengthCm: credentials.packageLengthCm,
         breadthCm: credentials.packageBreadthCm,
         heightCm: credentials.packageHeightCm,
