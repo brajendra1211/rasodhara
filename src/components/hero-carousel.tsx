@@ -37,7 +37,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="relative aspect-[16/10] w-full sm:aspect-[21/9] sm:max-h-[560px]">
+      <div className="relative aspect-[21/9] w-full sm:max-h-[560px]">
         {slides.map((slide, i) => (
           <div
             key={slide.title}
@@ -67,42 +67,42 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
 
         <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/25 to-transparent sm:from-black/55 sm:via-black/10 sm:to-transparent" />
 
-        <div className="absolute inset-0 flex flex-col justify-center gap-3 px-6 sm:gap-4 sm:px-16">
-          <div className="flex max-w-lg flex-col items-start gap-3 sm:gap-4">
+        <div className="absolute inset-0 flex flex-col justify-center gap-1.5 px-4 sm:gap-4 sm:px-16">
+          <div className="flex max-w-lg flex-col items-start gap-1.5 sm:gap-4">
             {active.badge && (
-              <span className="rounded-full bg-amber-500 px-2.5 py-1 text-[11px] font-semibold text-white sm:px-3 sm:text-xs">
+              <span className="rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-semibold text-white sm:px-3 sm:py-1 sm:text-xs">
                 {active.badge}
               </span>
             )}
-            <h1 className="text-2xl leading-tight font-bold text-white drop-shadow-sm sm:text-5xl">
+            <h1 className="line-clamp-2 text-base leading-tight font-bold text-white drop-shadow-sm sm:line-clamp-none sm:text-5xl">
               {active.title}
             </h1>
-            <p className="max-w-md text-xs text-zinc-100 drop-shadow-sm sm:text-base">{active.subtitle}</p>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <p className="hidden max-w-md text-zinc-100 drop-shadow-sm sm:block sm:text-base">{active.subtitle}</p>
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-3">
               <Link
                 href={active.ctaHref}
-                className="rounded-full bg-amber-600 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-amber-700 sm:px-6 sm:py-2.5 sm:text-sm"
+                className="rounded-full bg-amber-600 px-3 py-1.5 text-[11px] font-semibold text-white transition-colors hover:bg-amber-700 sm:px-6 sm:py-2.5 sm:text-sm"
               >
                 {active.ctaLabel}
               </Link>
               <Link
                 href="/our-story"
-                className="rounded-full border-2 border-white px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-white hover:text-[#3f2d20] sm:px-6 sm:py-2.5 sm:text-sm"
+                className="hidden rounded-full border-2 border-white px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-white hover:text-[#3f2d20] sm:inline-block"
               >
                 Explore Our Story
               </Link>
             </div>
 
             {slides.length > 1 && (
-              <div className="flex gap-2 pt-1 sm:pt-2">
+              <div className="flex gap-1.5 sm:gap-2 sm:pt-2">
                 {slides.map((slide, i) => (
                   <button
                     key={slide.title}
                     type="button"
                     aria-label={`Go to slide ${i + 1}`}
                     onClick={() => setIndex(i)}
-                    className={`h-2 rounded-full transition-all ${
-                      i === index ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
+                    className={`h-1.5 rounded-full transition-all sm:h-2 ${
+                      i === index ? "w-4 bg-white sm:w-6" : "w-1.5 bg-white/50 hover:bg-white/80 sm:w-2"
                     }`}
                   />
                 ))}
