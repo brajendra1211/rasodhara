@@ -37,7 +37,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="relative aspect-[4/3] w-full sm:aspect-[21/9] sm:max-h-[560px]">
+      <div className="relative aspect-[16/10] w-full sm:aspect-[21/9] sm:max-h-[560px]">
         {slides.map((slide, i) => (
           <div
             key={slide.title}
@@ -60,7 +60,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
               fill
               sizes="100vw"
               priority={i === 0}
-              className="object-cover sm:object-contain"
+              className="object-contain"
             />
           </div>
         ))}
