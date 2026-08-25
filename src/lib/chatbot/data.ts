@@ -4,6 +4,8 @@ const STOPWORDS = new Set([
   "mujhe", "chahiye", "hai", "hain", "h", "hum", "mera", "meri", "mere", "ka", "ki", "ke", "ko", "se", "me", "mein",
   "aur", "ek", "kuch", "koi", "hoga", "kya", "kaun", "the", "and", "for", "of", "to", "do", "you", "have", "has",
   "want", "need", "looking", "please", "some", "any", "get", "buy", "show", "find",
+  "product", "products", "item", "items", "dikhao", "dikha", "dikhaye", "batao", "batado", "bata", "karo", "kar",
+  "dijiye", "dena", "milega", "milegi", "de", "dedo",
 ]);
 
 const SPELLING_ALIASES: Record<string, string> = {
@@ -12,7 +14,7 @@ const SPELLING_ALIASES: Record<string, string> = {
   atchar: "achaar",
 };
 
-function extractSearchTerms(query: string): string[] {
+export function extractSearchTerms(query: string): string[] {
   const words = query
     .toLowerCase()
     .replace(/[^\p{L}\p{N}\s]/gu, " ")
@@ -20,10 +22,20 @@ function extractSearchTerms(query: string): string[] {
     .map((w) => SPELLING_ALIASES[w] ?? w)
     .filter((w) => w.length >= 3 && !STOPWORDS.has(w));
 
-  return words.length > 0 ? Array.from(new Set(words)) : [query.trim()].filter(Boolean);
+  return Array.from(new Set(words));
 }
 
-export async function searchProducts(query: string, limit = 5) {
+export type ProductResult = {
+  name: string;
+  slug: string;
+  url: string;
+  price: number;
+  category: string;
+  inStock: boolean;
+  image: string | null;
+};
+
+export async function searchProducts(query: string, limit = 5): Promise<ProductResult[]> {
   const terms = extractSearchTerms(query);
   if (terms.length === 0) return [];
 
@@ -36,7 +48,7 @@ export async function searchProducts(query: string, limit = 5) {
         { category: { name: { contains: term } } },
       ]),
     },
-    include: { category: true },
+    include: { category: true, images: { take: 1 } },
     take: limit * 4,
   });
 
@@ -57,6 +69,7 @@ export async function searchProducts(query: string, limit = 5) {
     price: p.price,
     category: p.category.name,
     inStock: p.stock > 0,
+    image: p.images[0]?.url ?? null,
   }));
 }
 

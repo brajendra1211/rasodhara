@@ -38,7 +38,7 @@ export async function POST(request: Request) {
   };
 
   try {
-    const reply =
+    const result =
       credentials.enabled && credentials.apiKey
         ? await runAiChat({
             apiKey: credentials.apiKey,
@@ -49,11 +49,12 @@ export async function POST(request: Request) {
           })
         : await runFallbackChat({ message: lastUserMessage.content, store, userId });
 
-    return NextResponse.json({ reply });
+    return NextResponse.json({ reply: result.text, products: result.products ?? [] });
   } catch (err) {
     console.error("Chat error:", err);
     return NextResponse.json({
       reply: "Sorry, something went wrong. Please try again or contact us directly.",
+      products: [],
     });
   }
 }
