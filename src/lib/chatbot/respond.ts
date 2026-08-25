@@ -166,6 +166,25 @@ export async function runFallbackChat({
     return `Hi! I'm ${store.siteName}'s assistant. I can help you search products, check an order's status, or answer questions about shipping and returns. What do you need?`;
   }
 
+  if (/^search products?$/.test(text)) {
+    return "Sure — what product are you looking for? (e.g. a pickle, ghee, or spice)";
+  }
+
+  if (/^(shipping( ?& ?| and )?returns?)$/.test(text)) {
+    const feeText =
+      store.shippingFlatFee > 0 ? `${formatINR(store.shippingFlatFee)} flat shipping` : "free shipping";
+    const freeText = store.freeShippingThreshold ? ` (free above ${formatINR(store.freeShippingThreshold)})` : "";
+    return `We charge ${feeText}${freeText}. Cash on Delivery is ${
+      store.codEnabled ? "available" : "currently not available"
+    }. You can cancel an order from Account → Orders while it's Pending or Paid; for returns/refunds contact us at ${contact}.`;
+  }
+
+  if (/^(track my order|my order|order status)$/.test(text)) {
+    return `Please share your Order ID (from your confirmation email or Account → My Orders) so I can check its status.${
+      userId ? "" : " If you checked out as a guest, please also include the 10-digit phone number you used."
+    }`;
+  }
+
   if (/\b(order|track|status|invoice|bill|delivery)\b/.test(text)) {
     const idMatch = message.match(/\b[a-z0-9]{20,}\b/i);
     const phoneMatch = message.match(/\b\d{10}\b/);

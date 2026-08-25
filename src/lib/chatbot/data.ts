@@ -1,23 +1,56 @@
 import { prisma } from "@/lib/prisma";
 
+const STOPWORDS = new Set([
+  "mujhe", "chahiye", "hai", "hain", "h", "hum", "mera", "meri", "mere", "ka", "ki", "ke", "ko", "se", "me", "mein",
+  "aur", "ek", "kuch", "koi", "hoga", "kya", "kaun", "the", "and", "for", "of", "to", "do", "you", "have", "has",
+  "want", "need", "looking", "please", "some", "any", "get", "buy", "show", "find",
+]);
+
+const SPELLING_ALIASES: Record<string, string> = {
+  aachar: "achaar",
+  achar: "achaar",
+  atchar: "achaar",
+};
+
+function extractSearchTerms(query: string): string[] {
+  const words = query
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s]/gu, " ")
+    .split(/\s+/)
+    .map((w) => SPELLING_ALIASES[w] ?? w)
+    .filter((w) => w.length >= 3 && !STOPWORDS.has(w));
+
+  return words.length > 0 ? Array.from(new Set(words)) : [query.trim()].filter(Boolean);
+}
+
 export async function searchProducts(query: string, limit = 5) {
-  const q = query.trim();
-  if (!q) return [];
+  const terms = extractSearchTerms(query);
+  if (terms.length === 0) return [];
 
   const products = await prisma.product.findMany({
     where: {
-      OR: [
-        { name: { contains: q } },
-        { shortDescription: { contains: q } },
-        { tasteProfile: { contains: q } },
-        { category: { name: { contains: q } } },
-      ],
+      OR: terms.flatMap((term) => [
+        { name: { contains: term } },
+        { shortDescription: { contains: term } },
+        { tasteProfile: { contains: term } },
+        { category: { name: { contains: term } } },
+      ]),
     },
     include: { category: true },
-    take: limit,
+    take: limit * 4,
   });
 
-  return products.map((p) => ({
+  const ranked = products
+    .map((p) => {
+      const haystack = `${p.name} ${p.shortDescription ?? ""} ${p.tasteProfile ?? ""} ${p.category.name}`.toLowerCase();
+      const score = terms.filter((t) => haystack.includes(t)).length;
+      return { p, score };
+    })
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit)
+    .map(({ p }) => p);
+
+  return ranked.map((p) => ({
     name: p.name,
     slug: p.slug,
     url: `/product/${p.slug}`,
