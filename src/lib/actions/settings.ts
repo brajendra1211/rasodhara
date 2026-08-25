@@ -206,6 +206,29 @@ export async function updateHeadingFontSettings(formData: FormData) {
   revalidateSiteWide();
 }
 
+export async function updateChatbotSettings(formData: FormData) {
+  await requireAdmin();
+
+  const existing = await prisma.siteSettings.findUnique({ where: { id: "singleton" } });
+
+  const apiKeyRaw = String(formData.get("chatbotApiKey") ?? "").trim();
+  const apiKey = apiKeyRaw ? encryptSecret(apiKeyRaw) : existing?.chatbotApiKey || null;
+
+  const data = {
+    chatbotEnabled: formData.get("chatbotEnabled") === "on",
+    chatbotApiKey: apiKey,
+    chatbotInstructions: String(formData.get("chatbotInstructions") ?? "").trim() || null,
+  };
+
+  await prisma.siteSettings.upsert({
+    where: { id: "singleton" },
+    update: data,
+    create: { id: "singleton", ...data },
+  });
+
+  revalidatePath("/admin/settings/chatbot");
+}
+
 export async function updateWhyUsSection(formData: FormData) {
   await requireAdmin();
 

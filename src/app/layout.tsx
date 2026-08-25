@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { CartDrawer } from "@/components/cart-drawer";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
+import { ChatWidget } from "@/components/chat-widget";
 import { getSiteSettings } from "@/lib/settings";
 import { getBaseUrl } from "@/lib/site-url";
 import { generateColorRamp, isValidHexColor, DEFAULT_THEME_COLOR } from "@/lib/theme-color";
@@ -129,6 +130,7 @@ export default async function RootLayout({
           <SiteFooter />
           <CartDrawer />
           <MobileBottomNav />
+          <ChatWidget siteName={settings.siteName} enabled={settings.chatbotEnabled} />
         </AuthProvider>
       </body>
     </html>

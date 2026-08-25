@@ -15,6 +15,7 @@ const TABS = [
   { label: "Shipping & Tax", href: "/admin/settings/shipping" },
   { label: "Payments", href: "/admin/settings/payments" },
   { label: "Shiprocket", href: "/admin/settings/shiprocket" },
+  { label: "Chatbot", href: "/admin/settings/chatbot" },
 ];
 
 export function SettingsSubNav({ active }: { active: string }) {

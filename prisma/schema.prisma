@@ -256,6 +256,9 @@ model SiteSettings {
   shiprocketPackageLengthCm    Int    @default(20)
   shiprocketPackageBreadthCm   Int    @default(15)
   shiprocketPackageHeightCm    Int    @default(10)
+  chatbotEnabled          Boolean  @default(false)
+  chatbotApiKey           String?
+  chatbotInstructions     String?  @db.Text
   updatedAt              DateTime @updatedAt
 }
 

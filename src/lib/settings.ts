@@ -44,6 +44,9 @@ const DEFAULT_SETTINGS = {
   shiprocketPackageLengthCm: 20,
   shiprocketPackageBreadthCm: 15,
   shiprocketPackageHeightCm: 10,
+  chatbotEnabled: false,
+  chatbotApiKey: null as string | null,
+  chatbotInstructions: null as string | null,
 };
 
 export async function getSiteSettings() {
