@@ -47,6 +47,7 @@ model User {
   reviews             Review[]
   addresses           Address[]
   passwordResetTokens PasswordResetToken[]
+  chatConversations   ChatConversation[]
 }
 
 model Address {
@@ -347,4 +348,35 @@ model BlogPost {
   metaDescription String?  @db.Text
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+}
+
+enum ChatRole {
+  USER
+  ASSISTANT
+  ADMIN
+}
+
+model ChatConversation {
+  id            String        @id @default(cuid())
+  userId        String?
+  user          User?         @relation(fields: [userId], references: [id])
+  guestId       String?
+  botPaused     Boolean       @default(false)
+  lastMessageAt DateTime      @default(now())
+  createdAt     DateTime      @default(now())
+  messages      ChatMessage[]
+
+  @@index([userId])
+  @@index([guestId])
+}
+
+model ChatMessage {
+  id             String           @id @default(cuid())
+  conversationId String
+  conversation   ChatConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  role           ChatRole
+  content        String           @db.Text
+  createdAt      DateTime         @default(now())
+
+  @@index([conversationId])
 }

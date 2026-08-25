@@ -30,6 +30,9 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         <Link href="/admin/orders" className="rounded-md px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900">
           Orders
         </Link>
+        <Link href="/admin/chat" className="rounded-md px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900">
+          Chat
+        </Link>
         <Link href="/admin/coupons" className="rounded-md px-2 py-1.5 text-sm hover:bg-zinc-100 dark:hover:bg-zinc-900">
           Coupons
         </Link>

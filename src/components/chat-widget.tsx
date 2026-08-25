@@ -14,19 +14,59 @@ type ProductCard = {
   image: string | null;
 };
 
-type Message = { role: "user" | "assistant"; content: string; products?: ProductCard[] };
+type Message = {
+  id: string;
+  role: "USER" | "ASSISTANT" | "ADMIN";
+  content: string;
+  products?: ProductCard[];
+};
 
 const QUICK_REPLIES = ["Track my order", "Search products", "Shipping & returns"];
+const POLL_MS = 5000;
+const GUEST_ID_KEY = "chatGuestId";
+const CONVERSATION_ID_KEY = "chatConversationId";
+
+function getOrCreateGuestId(): string {
+  if (typeof window === "undefined") return "";
+  let id = window.localStorage.getItem(GUEST_ID_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    window.localStorage.setItem(GUEST_ID_KEY, id);
+  }
+  return id;
+}
 
 export function ChatWidget({ siteName, enabled }: { siteName: string; enabled: boolean }) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: "assistant", content: `Hi! I'm ${siteName}'s assistant. I can help you find products, check an order's status, or answer shipping/return questions. What do you need?` },
+    {
+      id: "greeting",
+      role: "ASSISTANT",
+      content: `Hi! I'm ${siteName}'s assistant. I can help you find products, check an order's status, or answer shipping/return questions. What do you need?`,
+    },
   ]);
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+  const conversationIdRef = useRef<string | null>(null);
+  const guestIdRef = useRef<string>("");
+  const lastMessageIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    guestIdRef.current = getOrCreateGuestId();
+    const storedConversationId = window.localStorage.getItem(CONVERSATION_ID_KEY);
+    if (storedConversationId) {
+      conversationIdRef.current = storedConversationId;
+      refresh({ reset: true });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+    const id = setInterval(refresh, POLL_MS);
+    return () => clearInterval(id);
+  }, [open]);
 
   useEffect(() => {
     listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
@@ -34,12 +74,45 @@ export function ChatWidget({ siteName, enabled }: { siteName: string; enabled: b
 
   if (!enabled || pathname.startsWith("/admin")) return null;
 
+  async function refresh(options?: { attachProducts?: ProductCard[]; reset?: boolean }) {
+    const conversationId = conversationIdRef.current;
+    if (!conversationId) return;
+
+    const params = new URLSearchParams({ conversationId, guestId: guestIdRef.current });
+    if (!options?.reset && lastMessageIdRef.current) params.set("afterId", lastMessageIdRef.current);
+
+    try {
+      const res = await fetch(`/api/chat?${params.toString()}`);
+      if (!res.ok) return;
+      const data = await res.json();
+      const newMessages: { id: string; role: Message["role"]; content: string }[] = data.messages ?? [];
+
+      if (newMessages.length > 0 || options?.reset) {
+        setMessages((prev) => [
+          ...(options?.reset ? [] : prev),
+          ...newMessages.map((m, idx) => ({
+            id: m.id,
+            role: m.role,
+            content: m.content,
+            products:
+              options?.attachProducts && m.role === "ASSISTANT" && idx === newMessages.length - 1
+                ? options.attachProducts
+                : undefined,
+          })),
+        ]);
+      }
+      if (newMessages.length > 0) {
+        lastMessageIdRef.current = newMessages[newMessages.length - 1].id;
+      }
+    } catch {
+      // Silent — polling failures shouldn't interrupt the chat.
+    }
+  }
+
   async function send(text: string) {
     const trimmed = text.trim();
     if (!trimmed || pending) return;
 
-    const nextMessages: Message[] = [...messages, { role: "user", content: trimmed }];
-    setMessages(nextMessages);
     setInput("");
     setPending(true);
 
@@ -47,21 +120,26 @@ export function ChatWidget({ siteName, enabled }: { siteName: string; enabled: b
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: nextMessages.map(({ role, content }) => ({ role, content })) }),
+        body: JSON.stringify({
+          message: trimmed,
+          conversationId: conversationIdRef.current,
+          guestId: guestIdRef.current,
+        }),
       });
       const data = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: data.reply ?? "Sorry, something went wrong. Please try again.",
-          products: Array.isArray(data.products) && data.products.length > 0 ? data.products : undefined,
-        },
-      ]);
+
+      if (data.conversationId && data.conversationId !== conversationIdRef.current) {
+        conversationIdRef.current = data.conversationId;
+        window.localStorage.setItem(CONVERSATION_ID_KEY, data.conversationId);
+      }
+
+      await refresh({
+        attachProducts: Array.isArray(data.products) && data.products.length > 0 ? data.products : undefined,
+      });
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Sorry, something went wrong. Please try again." },
+        { id: `error-${Date.now()}`, role: "ASSISTANT", content: "Sorry, something went wrong. Please try again." },
       ]);
     } finally {
       setPending(false);
@@ -91,13 +169,20 @@ export function ChatWidget({ siteName, enabled }: { siteName: string; enabled: b
           </div>
 
           <div ref={listRef} className="flex flex-1 flex-col gap-3 overflow-y-auto px-4 py-4">
-            {messages.map((m, i) => (
-              <div key={i} className={`flex flex-col gap-2 ${m.role === "user" ? "items-end" : "items-start"}`}>
+            {messages.map((m) => (
+              <div key={m.id} className={`flex flex-col gap-1 ${m.role === "USER" ? "items-end" : "items-start"}`}>
+                {m.role === "ADMIN" && (
+                  <span className="text-[10px] font-medium uppercase tracking-wide text-amber-600 dark:text-amber-400">
+                    Support team
+                  </span>
+                )}
                 <div
                   className={`max-w-[85%] whitespace-pre-line rounded-2xl px-3 py-2 text-sm ${
-                    m.role === "user"
+                    m.role === "USER"
                       ? "bg-amber-600 text-white"
-                      : "bg-zinc-100 text-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
+                      : m.role === "ADMIN"
+                        ? "bg-olive-100 text-olive-900 dark:bg-olive-900 dark:text-olive-50"
+                        : "bg-zinc-100 text-zinc-800 dark:bg-zinc-900 dark:text-zinc-100"
                   }`}
                 >
                   {m.content}
