@@ -2,7 +2,8 @@ module.exports = {
   apps: [
     {
       name: "rasodhara",
-      script: "server.js",
+      script: "start.sh",
+      interpreter: "bash",
       cwd: __dirname,
       exec_mode: "fork",
       env: {
